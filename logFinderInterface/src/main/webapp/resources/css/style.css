@@ -1,0 +1,112 @@
+h1{
+    text-shadow: 1px 1px 2px black, 0 0 25px;
+}
+
+h2{
+    text-shadow: 2px 2px 2px
+}
+
+.navigation{
+    margin: 5px;
+    border: 3px solid black;
+    border-radius: 10px;
+}
+
+.navigation input{
+    width: 100px;
+    height: 25px;
+    border-radius: 3px;
+    margin: 2px;
+    border: 1px solid black;
+    cursor: pointer;
+    box-shadow: 3px 3px 3px;
+}
+
+.navigation input:hover{
+    border: 1px solid;
+    font-weight: 800;
+}
+
+.navigation input:active{
+    position: relative;
+    top: 2px;
+    left: 2px;
+    box-shadow: 1px 1px 3px;
+}
+
+.interface{
+
+}
+
+.interface button{
+    width: 150px;
+    height: 35px;
+    font-weight: 500;
+    border-radius: 10px;
+    border: 3px solid black;
+    cursor: pointer;
+    font-size: 14pt;
+    margin: 5px;
+    box-shadow: 5px 5px 5px;
+}
+
+.interface input[type=submit]{
+    width: 170px;
+    height: 35px;
+    font-weight: 500;
+    border-radius: 10px;
+    border: 3px solid black;
+    cursor: pointer;
+    font-size: 14pt;
+    margin: 5px;
+    box-shadow: 5px 5px 5px;
+}
+
+.interface input[type=submit]:hover {
+    border: 3px solid;
+    font-weight: 800;
+}
+.interface input[type=submit]:active{
+    position: relative;
+    top:3px;
+    left: 3px;
+    box-shadow: 2px 2px 5px;
+}
+
+.interface input[type=text] {
+    height: 20px;
+    font-weight: 500;
+    border-radius: 5px;
+    cursor: text;
+}
+
+.interface input[type=password] {
+    height: 20px;
+    font-weight: 500;
+    border-radius: 5px;
+    cursor: text
+}
+
+.colorMenu{
+
+}
+
+.colorMenu input{
+    width: 50px;
+    height: 30px;
+    font-weight: 500;
+    border: 2px solid black;
+    cursor: pointer;
+    opacity: 0.0;
+}
+
+.colorMenu div{
+    display: inline-block;
+    border: 2px solid black;
+    margin: 5px;
+    border-radius: 5px;
+}
+
+.colorMenu div:hover{
+    border: 2px solid;
+}

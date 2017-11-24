@@ -1,0 +1,73 @@
+<?xml version='1.0' encoding='UTF-8'?><!-- Published by JAX-WS RI (http://jax-ws.java.net). RI's version is JAX-WS RI 2.3.0-b170407.2038 svn-revision#2eaca54d17a59d265c6fe886b7fd0027836c766c. -->
+<xsd:schema xmlns:ns0="http://soap.web_services.services.logFinder.ohapegor.ru/"
+            xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            targetNamespace="http://soap.web_services.services.logFinder.ohapegor.ru/">
+    <xsd:complexType name="fileGenerate">
+        <xsd:sequence>
+            <xsd:element name="arg0" type="ns0:searchInfo" minOccurs="0"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="fileGenerateResponse"/>
+    <xsd:complexType name="fileSearch">
+        <xsd:sequence>
+            <xsd:element name="arg0" type="ns0:searchInfo" minOccurs="0"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="fileSearchResponse">
+        <xsd:sequence>
+            <xsd:element name="return" type="xsd:boolean"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="logSearch">
+        <xsd:sequence>
+            <xsd:element name="arg0" type="ns0:searchInfo" minOccurs="0"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="logSearchResponse">
+        <xsd:sequence>
+            <xsd:element name="return" type="ns0:searchInfoResult" minOccurs="0"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="searchInfo">
+        <xsd:sequence>
+            <xsd:element name="date-intervals" type="ns0:significantDateInterval" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="fileExtension" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="location" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="realization" type="xsd:boolean"/>
+            <xsd:element name="regexp" type="xsd:string" minOccurs="0"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="significantDateInterval">
+        <xsd:sequence>
+            <xsd:element name="dateFrom" type="xsd:dateTime" minOccurs="0"/>
+            <xsd:element name="dateTo" type="xsd:dateTime" minOccurs="0"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="searchInfoResult">
+        <xsd:sequence>
+            <xsd:element name="empty-result-message" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="error-code" type="xsd:long"/>
+            <xsd:element name="error-message" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="file-location" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="result-logs" type="ns0:resultLogs" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="search-info" type="ns0:searchInfo" minOccurs="0"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="resultLogs">
+        <xsd:sequence>
+            <xsd:element name="content" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="fileName" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="timeMoment" type="xsd:dateTime" minOccurs="0"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:element name="fileGenerate" type="ns0:fileGenerate"/>
+    <xsd:element name="fileGenerateResponse" type="ns0:fileGenerateResponse"/>
+    <xsd:element name="fileSearch" type="ns0:fileSearch"/>
+    <xsd:element name="fileSearchResponse" type="ns0:fileSearchResponse"/>
+    <xsd:element name="logSearch" type="ns0:logSearch"/>
+    <xsd:element name="logSearchResponse" type="ns0:logSearchResponse"/>
+    <xsd:element name="search-info" type="ns0:searchInfo"/>
+    <xsd:element name="significant-date-interval" type="ns0:significantDateInterval"/>
+    <xsd:element name="search-info-result" type="ns0:searchInfoResult"/>
+    <xsd:element name="result-logs" type="ns0:resultLogs"/>
+</xsd:schema>

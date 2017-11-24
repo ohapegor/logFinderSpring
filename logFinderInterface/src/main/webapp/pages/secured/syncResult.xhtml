@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+<h:head>
+    <title>Sychronous result</title>
+    <h:outputScript library="js" name="colors.js"/>
+    <link rel="stylesheet" href="../../resources/css/style.css"/>
+    <style type="text/css">
+        .column1 { width: 25px }
+        .column2 { width: 200px; }
+        .column3 { width: 100px; }
+        .column4 { font-size: 10pt}
+    </style>
+</h:head>
+
+<h:body onload="setColorScheme('#{itfBean.style.r}','#{itfBean.style.g}','#{itfBean.style.b}')">
+    <h1 align="center">Результ вызова синхронного метода</h1>
+    <div class="navigation" style="display: inline-block; position: absolute; top: 5px; left: 5px">
+        <ui:insert name="userNavigation">
+            <ui:include src="../templates/userNavigation.xhtml"/>
+        </ui:insert>
+    </div>
+    <div class="interface" style="position: absolute; top: 150px; width: 100%">
+        <hr/>
+        <h:form>
+            <br/>
+            <h:panelGrid columns="2" border="1">
+                Error code:
+                <h:outputText value="#{itfBean.result.errorCode}"/>
+                Error message: <h:outputText value="#{itfBean.result.errorMessage}"/>
+                <h:outputText value="#{itfBean.result.emptyResultMessage}"
+                              rendered="#{empty itfBean.result.resultLogs}"/>
+            </h:panelGrid>
+            <br/>
+            <h:commandButton value="Повторить поиск" action="#{itfBean.goBack}"  style="width: 200px"/>
+            <br/>
+            <br/>
+
+        </h:form>
+        <h:dataTable value="#{itfBean.result.resultLogs}" var="log" border="1"
+                    style="width: 95%" rendered="#{!empty itfBean.result.resultLogs}" columnClasses="column1,column2,column3,column4">
+            <f:facet name="header">Found logs</f:facet>
+
+            <h:column>
+                <f:facet name="header">Log №</f:facet>
+                <h:outputText value="#{itfBean.result.resultLogs.indexOf(log)+1}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Time moment</f:facet>
+                <h:outputText value="#{log.timeMoment.time}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">File Name</f:facet>
+                <h:outputText value="#{log.fileName}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Message</f:facet>
+                <h:outputText value="#{log.content}"/>
+            </h:column>
+        </h:dataTable>
+    </div>
+</h:body>
+</html>

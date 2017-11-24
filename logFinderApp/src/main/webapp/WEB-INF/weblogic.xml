@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<weblogic-web-app
+        xmlns="http://xmlns.oracle.com/weblogic/weblogic-web-app"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+http://java.sun.com/xml/ns/javaee/ejb-jar_3_0.xsd
+http://xmlns.oracle.com/weblogic/weblogic-web-app
+http://xmlns.oracle.com/weblogic/weblogic-web-app/1.4/weblogic-web-app.xsd">
+
+
+<!--
+    <work-manager>
+        <name>wm/myWorkManager</name>
+        <max-threads-constraint>
+            <name>MaxThreadsCount</name>
+            <count>32</count>
+        </max-threads-constraint>
+    </work-manager>-->
+
+
+</weblogic-web-app>

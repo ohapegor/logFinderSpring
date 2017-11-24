@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+<h:head>
+    <meta http-equiv="Cache-control" content="no-cache"/>
+    <meta http-equiv="Pragma" content="no-cache"/>
+    <meta http-equiv="Expires" content="-1"/>
+    <title>
+        Home
+    </title>
+    <link rel="stylesheet" href="../resources/css/style.css"/>
+    <h:outputScript library="js" name="colors.js"/>
+    <h:outputScript library="js" name="jquery-3.2.1.js"/>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#palette').hide();
+            $('#myShowHidebtn').click(function () {
+                $("#palette").stop(true).toggle("slow");
+                $("#myShowHidebtn").val(function (i, t) {
+                    return t == 'Открыть Палитру' ? 'Скрыть Палитру' : 'Открыть Палитру';
+                });
+            });
+        });
+        function confirmExit() {
+            if (confirm("Press Ok to Exit")) {
+                return true;
+            } else return false;
+        }
+    </script>
+</h:head>
+
+<h:body onload="setColorScheme('#{itfBean.style.r}','#{itfBean.style.g}','#{itfBean.style.b}')">
+    <!--<h:body onload="setColorScheme('#{itfBean.style.r}','#{itfBean.style.g}','#{itfBean.style.b}')">-->
+    <h1 align="center">Home Page!</h1>
+    <div class="navigation" style="display: inline-block; position: absolute; top: 5px; left: 5px">
+        <ui:insert name="userNavigation">
+            <ui:include src="templates/userNavigation.xhtml"/>
+        </ui:insert>
+    </div>
+    <div style="position: absolute; top: 160px; left: 200px;  display: inline-block;">
+        <h2 align="center">Main menu</h2>
+        <hr/>
+        <h:form styleClass="interface">
+            <h:panelGrid columns="1">
+                <h:commandButton value="UserInterface" action="/pages/secured/UserInterface?faces-redirect=true"/>
+                <h:commandButton value="AdminPage" action="/pages/secured/adminPage?faces-redirect=true"/>
+                <h:commandButton value="SecuredInfo" action="/pages/secured/securedInfo?faces-redirect=true"/>
+                <h:commandButton value="Info" action="/pages/info?faces-redirect=true"/>
+            </h:panelGrid>
+        </h:form>
+    </div>
+    <div style="position: absolute; top: 200px; right: 100px">
+        <div align="right" class="interface">
+            <h:commandButton id="myShowHidebtn" value="Открыть Палитру" style="width: 250px"/>
+        </div>
+        <hr/>
+        <h:form prependId="false" id="palette" styleClass="colorMenu">
+            <h:panelGroup>
+                <div onclick="setColorScheme(217,87,45)" style="background-color: rgb(217,87,45)">
+                    <h:commandButton action="#{itfBean.setColorRgb(217,87,45)}">
+                        <f:ajax render="@none"/>
+                    </h:commandButton>
+                </div>
+
+                <div onclick="setColorScheme(110,199,45)" style="background-color: rgb(110,199,45)">
+                    <h:commandButton action="#{itfBean.setColorRgb(110,199,45)}">
+                        <f:ajax render="@none"/>
+                    </h:commandButton>
+                </div>
+                <div onclick="setColorScheme(74,82,196)" style="background-color: rgb(74,82,196)">
+                    <h:commandButton action="#{itfBean.setColorRgb(74,82,196)}">
+                        <f:ajax render="@none"/>
+                    </h:commandButton>
+                </div>
+                <div onclick="setColorScheme(169,245,242)" style="background-color: rgb(169,245,242)">
+                    <h:commandButton action="#{itfBean.setColorRgb(169,245,242)}">
+                        <f:ajax render="@none"/>
+                    </h:commandButton>
+                </div>
+                <div onclick="setColorScheme(17,194,117)" style="background-color: rgb(17,194,117)">
+                    <h:commandButton action="#{itfBean.setColorRgb(17,194,117)}">
+                        <f:ajax render="@none"/>
+                    </h:commandButton>
+                </div>
+                <div onclick="setColorScheme(173, 25, 179)" style="background-color: rgb(173, 25, 179)">
+                    <h:commandButton action="#{itfBean.setColorRgb(173, 25, 179)}">
+                        <f:ajax render="@none"/>
+                    </h:commandButton>
+                </div>
+                <div onclick="setColorScheme(240, 212, 110)" style="background-color: rgb(240, 212, 110)">
+                    <h:commandButton action="#{itfBean.setColorRgb(240, 212, 110)}">
+                        <f:ajax render="@none"/>
+                    </h:commandButton>
+                </div>
+                <div onclick="alert('Color forbidden'); return false" style="background-color: rgb(229, 73, 144)">
+                    <h:commandButton>
+                        <f:ajax render="@none"/>
+                    </h:commandButton>
+                </div>
+                <div onclick="{alert('Color forbidden'); return false}" style="background-color: rgb(214, 41, 67)">
+                    <h:commandButton>
+                        <f:ajax render="@none"/>
+                    </h:commandButton>
+                </div>
+            </h:panelGroup>
+        </h:form>
+    </div>
+        <div style="position: absolute; right:100px; top: 400px; display: inline-block" class="interface">
+          <!--<a href="about:blank" target="" onclick="return confirmExit()">
+                  <h:commandButton value="Выход"/>
+            </a>-->
+            <h:form>
+                <h:commandButton value="Выход" onclick="return confirmExit()" action="exit"/>
+            </h:form>
+
+        </div>
+</h:body>
+</html>

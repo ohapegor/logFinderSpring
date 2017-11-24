@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+<h:head>
+    <title>Asyncronous resurult</title>
+    <h:outputScript library="js" name="colors.js"/>
+    <link rel="stylesheet" href="../../resources/css/style.css"/>
+</h:head>
+<h:body onload="setColorScheme('#{itfBean.style.r}','#{itfBean.style.g}','#{itfBean.style.b}')">
+    <h1 align="center">Результ вызова асинхронного метода</h1>
+    <div class="navigation" style="display: inline-block; position: absolute; top: 5px; left: 5px">
+        <ui:insert name="userNavigation">
+            <ui:include src="../templates/userNavigation.xhtml"/>
+        </ui:insert>
+    </div>
+    <div class="interface" style="position: absolute; top: 160px; width: 100%">
+        <hr/>
+        <h:form>
+            <br/>
+            <h:panelGrid columns="2" border="1">
+                Error code:
+                <h:outputText value="#{itfBean.result.errorCode}"/>
+                Error message:
+                <h:outputText value="#{itfBean.result.errorMessage}"/>
+                <h:outputLabel for="download" value="Generated file path:" rendered="#{itfBean.result.errorCode eq 0}"/>
+                <h:commandLink id="download" value="#{itfBean.result.filePath}" action="#{itfBean.download}"
+                               rendered="#{itfBean.result.errorCode eq 0}"/>
+            </h:panelGrid>
+            <br/>
+            <h:commandButton value="Повторить поиск" action="#{itfBean.goBack}" style="width: 200px"/>
+        </h:form>
+    </div>
+</h:body>
+</html>

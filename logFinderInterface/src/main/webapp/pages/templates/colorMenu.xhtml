@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+<h:head>
+    <h:outputScript library="js" name="colors.js"/>
+</h:head>
+<h:body>
+    <ui:composition>
+        <div align="right" class="interface">
+            <h:commandButton id="myShowHidebtn" value="Открыть Палитру" style="width: 250px"/>
+        </div>
+        <hr/>
+        <h:form prependId="false" id="palette" styleClass="colorMenu">
+            <h:panelGroup>
+                <div onclick="setColorScheme(180,0,0)" style="background-color: rgb(180,0,0)">
+                    <h:commandButton action="#{itfBean.setColorRgb(180,0,0)}">
+                        <f:ajax render="@none"/>
+                    </h:commandButton>
+                </div>
+
+                <div onclick="setColorScheme(0,180,0)" style="background-color: rgb(0,180,0)">
+                    <h:commandButton action="#{itfBean.setColorRgb(0,180,0)}">
+                        <f:ajax render="@none"/>
+                    </h:commandButton>
+                </div>
+                <div onclick="setColorScheme(0,0,180)" style="background-color: rgb(0,0,180)">
+                    <h:commandButton action="#{itfBean.setColorRgb(0,0,180)}">
+                        <f:ajax render="@none"/>
+                    </h:commandButton>
+                </div>
+                <div onclick="setColorScheme(169,245,242)" style="background-color: rgb(169,245,242)">
+                    <h:commandButton action="#{itfBean.setColorRgb(169,245,242)}">
+                        <f:ajax render="@none"/>
+                    </h:commandButton>
+                </div>
+                <div onclick="setColorScheme(17,194,117)" style="background-color: rgb(17,194,117)">
+                    <h:commandButton action="#{itfBean.setColorRgb(17,194,117)}">
+                        <f:ajax render="@none"/>
+                    </h:commandButton>
+                </div>
+                <div onclick="setColorScheme(173, 25, 179)" style="background-color: rgb(173, 25, 179)">
+                    <h:commandButton action="#{itfBean.setColorRgb(173, 25, 179)}">
+                        <f:ajax render="@none"/>
+                    </h:commandButton>
+                </div>
+                <div onclick="setColorScheme(214, 41, 67)" style="background-color: rgb(214, 41, 67)">
+                    <h:commandButton action="#{itfBean.setColorRgb(214, 41, 67)}">
+                        <f:ajax render="@none"/>
+                    </h:commandButton>
+                </div>
+                <div onclick="setColorScheme(240, 212, 110)" style="background-color: rgb(240, 212, 110)">
+                    <h:commandButton action="#{itfBean.setColorRgb(240, 212, 110)}">
+                        <f:ajax render="@none"/>
+                    </h:commandButton>
+                </div>
+                <div onclick="alert('Color forbidden'); return false" style="background-color: rgb(229, 73, 144)">
+                    <h:commandButton>
+                        <f:ajax render="@none"/>
+                    </h:commandButton>
+                </div>
+                <div onclick="{alert('Color forbidden'); return false}" style="background-color: rgb(214, 41, 67)">
+                    <h:commandButton>
+                        <f:ajax render="@none"/>
+                    </h:commandButton>
+                </div>
+            </h:panelGroup>
+        </h:form>
+    </ui:composition>
+</h:body>
+</html>

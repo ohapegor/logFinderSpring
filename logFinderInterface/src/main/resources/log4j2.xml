@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="error">
+    <Appenders>
+        <JDBC name="databaseAppender" tableName="LOGGING">
+            <!--<ConnectionFactory claConnectionFactorytory"
+                               method="getDatabaseConnection" />-->
+            <DataSource jndiName="jdbc/usersDS"/>
+            <Column name="EVENT_DATE" isEventTimestamp="true" />
+            <Column name="LEVEL" pattern="%level" />
+            <Column name="LOGGER" pattern="%logger" />
+            <Column name="MESSAGE" pattern="%message" />
+            <Column name="THROWABLE" pattern="%ex{full}" />
+        </JDBC>
+        <Console name="STDOUT">
+            <!--<PatternLayout pattern="%d [%p] %c; Message:%m%n"/>-->
+            <PatternLayout pattern="Log4j2 %c [%p] Message:%m%n"/>
+        </Console>
+    </Appenders>
+    <Loggers>
+        <Root level="info">
+            <AppenderRef ref="STDOUT"/>
+            <AppenderRef ref="databaseAppender" level="fatal"/>
+        </Root>
+    </Loggers>
+</Configuration>
