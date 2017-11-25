@@ -6,7 +6,7 @@ import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
 
- class ConfigOld {
+public class ConfigOld {
 
      //apache commons configuration v1
     private static PropertiesConfiguration propertiesConfiguration;
@@ -37,4 +37,5 @@ import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
     public static int getInt(String key){
         return propertiesConfiguration.getInt(key);
     }
+
 }

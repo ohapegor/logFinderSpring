@@ -54,7 +54,7 @@
                                 <fo:table-row>
                                     <fo:table-cell border="solid 0.5mm black">
                                         <fo:block>
-                                            <xsl:text>DateFrom</xsl:text>
+                                            <xsl:text>Начальное время</xsl:text>
                                         </fo:block>
                                     </fo:table-cell>
                                     <fo:table-cell border="solid 0.5mm black">

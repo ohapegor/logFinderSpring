@@ -76,4 +76,5 @@ public class UserDAOImpl1 implements UserDAO {
         entityManager.remove(user);
         logger.info("Exiting UserDAOImpl1.deleteUser()");
     }
+
 }

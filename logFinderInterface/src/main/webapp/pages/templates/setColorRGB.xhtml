@@ -4,16 +4,17 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://xmlns.jcp.org/jsf/passthrough">
 <h:head>
     <h:outputScript library="js" name="colors.js"/>
 </h:head>
 <h:body>
     <ui:composition>
             <h:panelGrid columns="2">
-                <h:outputLabel for="R" value="R : "/><h:inputText style="width:30px; height: 20px" id="R" value="#{itfBean.style.r}"/>
-                <h:outputLabel for="G" value="G : "/><h:inputText style="width:30px; height: 20px" id="G" value="#{itfBean.style.g}"/>
-                <h:outputLabel for="B" value="B : "/><h:inputText style="width:30px; height: 20px" id="B" value="#{itfBean.style.b}"/>
+                <h:outputLabel for="R" value="R : "/><h:inputText style="width:30px; height: 20px" id="R" value="#{itfBean.style.r}" p:placeholder="R"/>
+                <h:outputLabel for="G" value="G : "/><h:inputText style="width:30px; height: 20px" id="G" value="#{itfBean.style.g}" p:placeholder="G"/>
+                <h:outputLabel for="B" value="B : "/><h:inputText style="width:30px; height: 20px" id="B" value="#{itfBean.style.b}" p:placeholder="B"/>
             </h:panelGrid>
             <h:commandButton styleClass="menuButton" value="Задать цвет" action="#{itfBean.setColorRGB()}"/>
     </ui:composition>

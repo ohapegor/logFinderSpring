@@ -4,7 +4,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://xmlns.jcp.org/jsf/passthrough">
 <h:head>
     <title>Log Finder</title>
     <link rel="stylesheet" href="../../resources/css/style.css"/>
@@ -44,7 +45,7 @@
         <hr/>
         <h:form id="intervals" prependId="false">
             <h:outputLabel for="regExp"><h3>Введите регулярное выражение</h3></h:outputLabel>
-            <h:inputText id="regExp" styleClass="myInputStyle" value="#{itfBean.regExp}" label="regexp"/>
+            <h:inputText id="regExp" styleClass="myInputStyle" value="#{itfBean.regExp}" label="regexp" p:placeholder="regexp"/>
             <br/>
             <br/>
                 <h:dataTable value="#{itfBean.formDateIntervals}" var="dateInterval">
@@ -52,48 +53,53 @@
                     <h:column>from</h:column>
 
                     <h:column>
-                        <f:facet name="header">DD</f:facet>
-                        <h:inputText  value="#{dateInterval.dateFrom.dd}" size="1"/> /
+                        <f:facet name="header">День</f:facet>
+                        <h:inputText  value="#{dateInterval.dateFrom.dd}" size="1" p:placeholder="DD"/> /
                     </h:column>
                     <h:column>
-                        <f:facet name="header">MM</f:facet>
-                        <h:inputText    value="#{dateInterval.dateFrom.MM}" size="1"/> /
+                        <f:facet name="header">Месяц</f:facet>
+                        <h:inputText    value="#{dateInterval.dateFrom.MM}" size="1" p:placeholder="MM"/> /
                     </h:column>
                     <h:column>
-                        <f:facet name="header">YYYY</f:facet>
-                        <h:inputText   value="#{dateInterval.dateFrom.yyyy}" size="1"/>
+                        <f:facet name="header">Год</f:facet>
+                        <h:inputText   value="#{dateInterval.dateFrom.yyyy}" size="1" p:placeholder="YYYY"/>
                     </h:column>
-
                     <h:column>
-                        <f:facet name="header">HH</f:facet>
-                        <h:inputText  value="#{dateInterval.dateFrom.HH}" size="1"/> : </h:column>
+                        <pre>   </pre>
+                    </h:column>
                     <h:column>
-                        <f:facet name="header">mm</f:facet>
-                        <h:inputText   value="#{dateInterval.dateFrom.mm}" size="1"/> : </h:column>
+                        <f:facet name="header">Час</f:facet>
+                        <h:inputText  value="#{dateInterval.dateFrom.HH}" size="1" p:placeholder="HH"/> : </h:column>
                     <h:column>
-                        <f:facet name="header">ss</f:facet>
-                        <h:inputText   value="#{dateInterval.dateFrom.ss}" size="1"/></h:column>
+                        <f:facet name="header">Минуты</f:facet>
+                        <h:inputText   value="#{dateInterval.dateFrom.mm}" size="1" p:placeholder="mm"/> : </h:column>
+                    <h:column>
+                        <f:facet name="header">Секунды</f:facet>
+                        <h:inputText   value="#{dateInterval.dateFrom.ss}" size="1" p:placeholder="ss"/></h:column>
                     <h:column>
                         <pre>      to  </pre>
                     </h:column>
                     <h:column>
-                        <f:facet name="header">DD</f:facet>
-                        <h:inputText  value="#{dateInterval.dateTo.dd}" size="1"/> / </h:column>
+                        <f:facet name="header">День</f:facet>
+                        <h:inputText  value="#{dateInterval.dateTo.dd}" size="1" p:placeholder="DD"/> / </h:column>
                     <h:column>
-                        <f:facet name="header">MM</f:facet>
-                        <h:inputText  value="#{dateInterval.dateTo.MM}" size="1"/> / </h:column>
+                        <f:facet name="header">Месяц</f:facet>
+                        <h:inputText  value="#{dateInterval.dateTo.MM}" size="1" p:placeholder="MM"/> / </h:column>
                     <h:column>
-                        <f:facet name="header">YYYY</f:facet>
-                        <h:inputText  value="#{dateInterval.dateTo.yyyy}" size="1"/> </h:column>
+                        <f:facet name="header">Год</f:facet>
+                        <h:inputText  value="#{dateInterval.dateTo.yyyy}" size="1" p:placeholder="YYYY"/> </h:column>
                     <h:column>
-                        <f:facet name="header">HH</f:facet>
-                        <h:inputText  value="#{dateInterval.dateTo.HH}" size="1"/> : </h:column>
+                        <pre>   </pre>
+                    </h:column>
                     <h:column>
-                        <f:facet name="header">mm</f:facet>
-                        <h:inputText  value="#{dateInterval.dateTo.mm}" size="1"/> : </h:column>
+                        <f:facet name="header">Час</f:facet>
+                        <h:inputText  value="#{dateInterval.dateTo.HH}" size="1" p:placeholder="HH"/> : </h:column>
                     <h:column>
-                        <f:facet name="header">ss</f:facet>
-                        <h:inputText  value="#{dateInterval.dateTo.ss}" size="1"/> </h:column>
+                        <f:facet name="header">Минуты</f:facet>
+                        <h:inputText  value="#{dateInterval.dateTo.mm}" size="1" p:placeholder="mm"/> : </h:column>
+                    <h:column>
+                        <f:facet name="header">Секунды</f:facet>
+                        <h:inputText  value="#{dateInterval.dateTo.ss}" size="1" p:placeholder="ss"/> </h:column>
                     <h:column>
                         <div onclick="setTimeout(function(){setColorScheme('#{itfBean.style.r}','#{itfBean.style.g}','#{itfBean.style.b}')},100)">
                             <h:commandButton value="Delete interval" action="#{itfBean.deleteInterval(dateInterval)}">
@@ -110,7 +116,7 @@
             <br/>
             <br/>
             <h:outputLabel for="location"><h3>Выберете расположение логов</h3></h:outputLabel>
-            <h:inputText id="location" value="#{itfBean.location}"/><br/><br/>
+            <h:inputText id="location" value="#{itfBean.location}" p:placeholder="cluster or server"/><br/><br/>
             <h:outputLabel for="realization"><h3>Выберете реализацию метода поиска</h3></h:outputLabel>
             <h:selectOneMenu id="realization" value="#{itfBean.realization}">
                 <f:selectItem itemValue="true" itemLabel="Acинхронный"/>

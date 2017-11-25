@@ -20,8 +20,6 @@ public class RestClient implements SearchLogWebClient {
 
     private static final org.apache.logging.log4j.Logger logger = LogManager.getLogger();
 
-/*    @Inject
-    private ConfigBean configBean;*/
 
     @Override
     public SearchInfoResult logSearch(SearchInfo searchInfo) {
