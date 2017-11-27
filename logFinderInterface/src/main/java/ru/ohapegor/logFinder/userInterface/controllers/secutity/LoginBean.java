@@ -2,8 +2,8 @@ package ru.ohapegor.logFinder.userInterface.controllers.secutity;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import ru.ohapegor.logFinder.userInterface.dao.GroupDAO;
 import ru.ohapegor.logFinder.userInterface.dao.UserDAO;
-import ru.ohapegor.logFinder.userInterface.dao.UserDAOImpl;
 import ru.ohapegor.logFinder.userInterface.entities.persistent.Group;
 import ru.ohapegor.logFinder.userInterface.entities.persistent.User;
 
@@ -20,7 +20,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashSet;
 
 import static org.apache.commons.lang.exception.ExceptionUtils.getStackTrace;
 
@@ -34,10 +33,14 @@ public class LoginBean {
     private String userName;
     private String password;
     private String confirmPassword;
+    private String userEmail;
     private String message;
 
     @EJB
     private UserDAO userDAO;
+
+    @EJB
+    private GroupDAO groupDAO;
 
     public String getMessage() {
         return message;
@@ -45,6 +48,14 @@ public class LoginBean {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public String getUserEmail() {
+        return userEmail;
+    }
+
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
     }
 
     public String getConfirmPassword() {
@@ -120,7 +131,6 @@ public class LoginBean {
         FacesContext context = FacesContext.getCurrentInstance();
         HttpSession session = (HttpSession) context.getExternalContext().getSession(false);
         if (session != null) session.invalidate();
-        //return "about:blank";
     }
 
     public String register() {
@@ -133,6 +143,11 @@ public class LoginBean {
 
         if (userName.length() < 5 || userName.length() > 15) {
             context.addMessage("", new FacesMessage(">>Username length must be between 5 and 15 characters<<"));
+            return "/pages/registration";
+        }
+
+        if (userEmail == null || userEmail.equals("")) {
+            context.addMessage("", new FacesMessage(">>Empty email<<"));
             return "/pages/registration";
         }
 
@@ -160,11 +175,14 @@ public class LoginBean {
             }
 
             String description = "Registration time: " + new Date().toString();
-            user = new User(userName, password, description, Collections.singleton(Group.NEW_USERS));
+            user = new User(userName, password, userEmail, description, Collections.singleton(groupDAO.getGroupByName("NewUsers")));
             userDAO.saveUser(user);
 
             context.addMessage(null, new FacesMessage("User : " + userName + " successfully registered!"));
             logger.fatal("Developer's log: New user registered, userName : " + userName);
+            userName = null;
+            password = null;
+            userEmail = null;
         } catch (Exception e) {
             logger.error("Exception in LoginBean.register(), e : " + getStackTrace(e));
             context.addMessage(null, new FacesMessage("Exception in LoginBean.register(), e : " + getStackTrace(e)));

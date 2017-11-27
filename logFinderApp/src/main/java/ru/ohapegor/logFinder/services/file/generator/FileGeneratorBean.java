@@ -38,11 +38,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.apache.commons.lang3.exception.ExceptionUtils.getStackTrace;
 
-@Stateful
-//@RequestScoped
+@Stateless
 public class FileGeneratorBean implements FileGeneratorService {
 
-    private AtomicInteger count = new AtomicInteger();
+
 
     private static final Logger logger = LogManager.getLogger();
 
@@ -59,10 +58,7 @@ public class FileGeneratorBean implements FileGeneratorService {
         return uniqueFilePath;
     }
 
-    @Override
-    public AtomicInteger getCount() {
-        return count;
-    }
+
 
     @Override
     public String fileSearch(SearchInfo searchInfo) {

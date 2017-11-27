@@ -27,6 +27,8 @@
             <h:panelGrid columns="2">
                 <h:outputLabel for="userName" value="Enter User Name"/>
                 <h:inputText id="userName" value="#{loginBean.userName}" p:placeholder="from 5 to 15 chars"/>
+                <h:outputLabel for="userEmail" value="Enter User Email"/>
+                <h:inputText id="userEmail" p:placeholder="not empty" value="#{loginBean.userEmail}"/>
                 <h:outputLabel for="password" value="Enter Password"/>
                 <h:inputSecret id="password" value="#{loginBean.password}" p:placeholder="from 10 to 25 chars"/>
                 <h:outputLabel for="confirmPassword" value="Confirm Password"/>

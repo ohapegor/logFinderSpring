@@ -1,96 +1,88 @@
 package ru.ohapegor.logFinder.userInterface.dao;
 
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
-import org.hibernate.cfg.Configuration;
 import ru.ohapegor.logFinder.userInterface.entities.persistent.User;
 
-
-import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
+import javax.transaction.Transactional;
 import java.util.List;
 
-import static org.apache.commons.lang.exception.ExceptionUtils.getStackTrace;
 
-//@Stateless(name = "userDao")
+@Stateless
 public class UserDAOImpl implements UserDAO {
 
     private static final Logger logger = LogManager.getLogger();
 
-    private SessionFactory factory;
-
-    @PostConstruct
-    public void init(){
-        try {
-            Configuration configuration = new Configuration().configure("hibernate.cfg.xml");
-            configuration.setProperty("hibernate.connection.datasource", "jdbc/usersDS");
-            factory = configuration.buildSessionFactory();
-        }catch (Exception e){
-            logger.error("Exception in UserDAOImpl while building session factory : " + getStackTrace(e));
-            throw new ExceptionInInitializerError("Failed building session factory.");
-        }
-    }
-
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Override
-    public User getUserByName(String username) {
+    @Transactional
+    public List<User> getAllUsers() {
+        logger.info("Entering UserDAOImpl.getAllUsers()");
+        entityManager.joinTransaction();
+        TypedQuery<User> query = entityManager.createQuery("SELECT u FROM User u", User.class);
+        List<User> userList = query.getResultList();
+        userList.forEach(user -> {
+            if (user.getGroups().stream().anyMatch(group -> group.getGroupName().equalsIgnoreCase("BannedUsers"))) {
+                user.setBanned(true);
+            } else {
+                user.setBanned(false);
+            }
+        });
+        logger.info("Exiting UserDAOImpl.getAllUsers()");
+        return userList;
+    }
+
+    @Override
+    @Transactional
+    public void saveUser(User user) {
+        logger.info("Entering UserDAOImpl.saveUser()");
+        entityManager.joinTransaction();
+        entityManager.persist(user);
+        logger.info("Exiting UserDAOImpl.saveUser()");
+    }
+
+    @Override
+    @Transactional
+    public void updateUser(User user) {
+        logger.info("Entering UserDAOImpl.updateUser()");
+        entityManager.joinTransaction();
+        entityManager.merge(user);
+        logger.info("Exiting UserDAOImpl.updateUser()");
+    }
+
+    @Override
+    @Transactional
+    public User getUserByName(String userName) {
         logger.info("Entering UserDAOImpl.getUserByName()");
-        Transaction tx = null;
-        User user = null;
-        try (Session session = factory.openSession()) {
-            tx = session.beginTransaction();
-            user = session.get(User.class, username);
-            tx.commit();
-        } catch (Exception e) {
-            logger.error("Exception in UserDAOImpl.getUserByName : " + getStackTrace(e));
-            if (tx!=null) tx.rollback();
+        entityManager.joinTransaction();
+        User user = entityManager.find(User.class, userName);
+        if (user != null && user.getGroups().stream().anyMatch(group -> group.getGroupName().equalsIgnoreCase("BannedUsers"))) {
+            user.setBanned(true);
         }
-        logger.info("Exiting UserDAOImpl.getUserByName()");
+        logger.info("Exiting UserDAOImpl.saveUser()");
         return user;
-
     }
 
     @Override
+    @Transactional
     public void deleteUser(User user) {
         logger.info("Entering UserDAOImpl.deleteUser()");
-        Transaction tx = null;
-        try (Session session = factory.openSession()) {
-            tx = session.beginTransaction();
-            session.delete(user);
-            tx.commit();
-        } catch (Exception e) {
-            logger.error("Exception in UserDAOImpl.deleteUser : " + getStackTrace(e));
-            if (tx!=null) tx.rollback();
+        entityManager.joinTransaction();
+        entityManager.remove(entityManager.contains(user) ? user : entityManager.merge(user));
+        logger.info("Exiting UserDAOImpl.deleteUser()");
+    }
+
+    @PreDestroy
+    private void cleanup() {
+        if (entityManager.isOpen()) {
+            entityManager.close();
         }
-        logger.info("Exiting UserDAOImpl.getUserByName()");
-    }
-
-    @Override
-    public void updateUser(User user) {
-
-    }
-
-    @Override
-    public List<User> getAllUsers() {
-        return null;
-    }
-
-    @Override
-    public void saveUser(User user) {
-        logger.info("Entering UserDAOImpl.getUserByName()");
-        Transaction tx = null;
-        try (Session session = factory.openSession()) {
-            tx = session.beginTransaction();
-            session.save(user);
-            tx.commit();
-        } catch (Exception e) {
-            logger.error("Exception in UserDAOImpl.saveUser : " + getStackTrace(e));
-            if (tx!=null) tx.rollback();
-        }
-        logger.info("Exiting UserDAOImpl.getUserByName()");
     }
 }

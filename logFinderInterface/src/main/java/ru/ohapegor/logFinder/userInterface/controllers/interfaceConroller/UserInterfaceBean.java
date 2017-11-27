@@ -7,6 +7,7 @@ import ru.ohapegor.logFinder.userInterface.entities.FormDateInterval;
 import ru.ohapegor.logFinder.userInterface.entities.Style;
 import ru.ohapegor.logFinder.userInterface.services.webClients.SearchLogWebClient;
 
+import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
@@ -21,28 +22,32 @@ import java.util.*;
 
 @ManagedBean(name = "itfBean", eager = true)
 @SessionScoped
-public class UserInterfaceBean{
+public class UserInterfaceBean {
 
-    @EJB(beanName = "soapClient2")
+    //@EJB(beanName = "soapClient")
+    @EJB(beanName = "restClient")
     private SearchLogWebClient client;
 
     private static final Logger logger = LogManager.getLogger(UserInterfaceBean.class.getSimpleName());
 
     private List<FormDateInterval> formDateIntervals;
-    private String regExp = ".*Log4j.*";
+    private String regExp;
     private boolean realization = true;
     private String extension;
     private String location;
     private SearchInfo searchInfo;
-    private SearchInfoResult result = new SearchInfoResult();
-    private Style style = new Style();
+    private SearchInfoResult result;
+    private Style style;
 
 
-    //add first date interval in form
-    {
+    //init form
+    @PostConstruct
+    public void init() {
         formDateIntervals = new ArrayList<>();
         FormDateInterval firstInterval = new FormDateInterval();
         formDateIntervals.add(firstInterval);
+        regExp = ".*Log4j.*";
+        style = Style.of("A9F5F2");
     }
 
     //getters and setters
@@ -175,7 +180,6 @@ public class UserInterfaceBean{
         searchInfo.setDateIntervals(significantDateIntervals);
 
 
-
         for (SignificantDateInterval interval : significantDateIntervals) {
             if (interval.getDateFrom() == null || interval.getDateTo() == null) {
                 logger.info("Date interval is missing or incorrect, exiting UserInterfaceBean.correctionCheck(SearchInfo searchInfo)");
@@ -206,17 +210,18 @@ public class UserInterfaceBean{
             FacesContext context = FacesContext.getCurrentInstance();
             HttpSession session = (HttpSession) context.getExternalContext().getSession(true);
             if (session.getAttribute("username") != null) {
-                String  username = String.valueOf(session.getAttribute("username"));
+                String username = String.valueOf(session.getAttribute("username"));
                 logger.fatal("User - " + username + " is searching logs with " + searchInfo);
             }
 
+            //throws InvalidSearchInfoException
             correctionCheck();
 
             //invoke web service if info correct
-            searchLogWithWebClient(searchInfo);
+            result= client.logSearch(searchInfo);
             if (result == null) {
                 result = new SearchInfoResult();
-                result.setEmptyResultMessage("Client returned NULL (web service is not reachable!)");
+                result.setEmptyResultMessage("Client returned NULL");
             }
 
         } catch (InvalidSearchInfoException e) {
@@ -234,11 +239,6 @@ public class UserInterfaceBean{
         return realization ? "/pages/secured/asyncResult?faces-redirect=true" : "/pages/secured/syncResult?faces-redirect=true";
     }
 
-    private void searchLogWithWebClient(SearchInfo searchInfo) {
-        logger.info("Entering UserInterfaceBean.searchLogWithWebClient(SearchInfo searchInfo)");
-        result = client.logSearch(searchInfo);
-        logger.info("Exiting UserInterfaceBean.searchLogWithWebClient(SearchInfo searchInfo)");
-    }
 
     public void download() {
         logger.info("Developer's log: Entering UserInterfaceBean.download()");
@@ -277,8 +277,13 @@ public class UserInterfaceBean{
         } finally {
             try {
                 output.flush();
-                output.close();} catch (Exception ignored) {}
-            try {input.close();} catch (Exception ignored) {}
+                output.close();
+            } catch (Exception ignored) {
+            }
+            try {
+                input.close();
+            } catch (Exception ignored) {
+            }
         }
         logger.info("Developer's log: Exiting UserInterfaceBean.download()");
     }
@@ -293,7 +298,6 @@ public class UserInterfaceBean{
 
     public void cleanAll() {
         location = "";
-        //formDateIntervals = new ArrayList<>();
         for (FormDateInterval interval : formDateIntervals) {
             interval.clearInterval();
         }

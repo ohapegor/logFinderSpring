@@ -3,9 +3,14 @@ package ru.ohapegor.logFinder.userInterface.entities;
 
 public class Style {
 
-    //init Style
-    {
-        this.setColor("A9F5F2");
+
+
+    public static Style of(String color){
+        return new Style(color);
+    }
+
+    public Style(String color) {
+        this.color = color;
         setColorScheme();
     }
 

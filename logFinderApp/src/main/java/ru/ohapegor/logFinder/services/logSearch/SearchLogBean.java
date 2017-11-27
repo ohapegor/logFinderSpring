@@ -18,6 +18,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -43,9 +44,8 @@ public class SearchLogBean implements SearchLogService {
     }
 
     @Override
-    public  SearchInfoResult correctionCheck(SearchInfo searchInfo) {
+    public  CorrectionCheckResult correctionCheck(SearchInfo searchInfo) {
         logger.info("Entering SearchLogBean.correctionCheck()"+searchInfo);
-        SearchInfoResult result = new SearchInfoResult();
 
         //3701
         //Missed async method file extension
@@ -120,8 +120,9 @@ public class SearchLogBean implements SearchLogService {
         }
 
         logger.info("SearchLogInfo is correct, exiting SearchLogBean.correctionCheck()");
-        return result;
+        return CorrectionCheckResult._0;
     }
+
 
     private Map<String, String> getAllServerNames() {
         logger.info("Entering SearchLogBean.getAllServerNamesWithCluster()");

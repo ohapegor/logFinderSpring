@@ -1,4 +1,4 @@
-package ru.ohapegor.logFinder.userInterface.services.webClients.soapClient2;
+package ru.ohapegor.logFinder.userInterface.services.webClients.soapClient;
 
 import ru.ohapegor.logFinder.entities.SearchInfo;
 import ru.ohapegor.logFinder.entities.SearchInfoResult;

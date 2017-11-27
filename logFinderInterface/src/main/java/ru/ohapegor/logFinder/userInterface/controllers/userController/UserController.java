@@ -2,10 +2,10 @@ package ru.ohapegor.logFinder.userInterface.controllers.userController;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import ru.ohapegor.logFinder.userInterface.dao.GroupDAO;
 import ru.ohapegor.logFinder.userInterface.dao.UserDAO;
 import ru.ohapegor.logFinder.userInterface.entities.persistent.Group;
 import ru.ohapegor.logFinder.userInterface.entities.persistent.User;
-import ru.ohapegor.logFinder.userInterface.services.jmsSender.JmsMessage;
 import ru.ohapegor.logFinder.userInterface.services.jmsSender.JmsMessageSender;
 
 import javax.annotation.PostConstruct;
@@ -27,6 +27,9 @@ public class UserController {
 
     @EJB
     private UserDAO userDAO;
+
+    @EJB
+    private GroupDAO groupDAO;
 
     @PostConstruct
     private void init() {
@@ -55,7 +58,7 @@ public class UserController {
 
     public void ban(User user) {
         logger.info("Entering UserController.ban()");
-        user.getGroups().add(Group.BANNED);
+        user.getGroups().add(groupDAO.getGroupByName("BannedUsers"));
         userDAO.updateUser(user);
         loadUsers();
         logger.info("Exiting UserController.ban()");
@@ -63,12 +66,13 @@ public class UserController {
 
     public void unBan(User user) {
         logger.info("Entering UserController.ban()");
-        user.getGroups().remove(Group.BANNED);
-        user.getGroups().forEach(group -> {
+        user.getGroups().remove(groupDAO.getGroupByName("BannedUsers"));
+        /*user.getGroups().forEach(group -> {
             if (group.getGroupName().equalsIgnoreCase("BannedUsers")) {
                 user.getGroups().remove(group);
             }
-        });
+        });*/
+        user.setBanned(false);
         userDAO.updateUser(user);
         loadUsers();
         logger.info("Exiting UserController.ban()");
@@ -79,5 +83,11 @@ public class UserController {
         messageSender.sendJmsMessage(user.getMessageToSend(),user.getEmail());
         user.setMessageToSend(null);
         logger.info("Exiting UserController.sendJmsMessage()");
+    }
+
+    public void reload() {
+        logger.info("Entering UserController.reload()");
+        userList = userDAO.getAllUsers();
+        logger.info("Exiting UserController.reload()");
     }
 }

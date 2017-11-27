@@ -20,6 +20,7 @@ import javax.ws.rs.core.Response;
 import java.io.Serializable;
 
 @Path("/SearchLogService")
+@Stateless
 public class SearchLogREST extends AbstractWebService implements Serializable {
 
     @POST

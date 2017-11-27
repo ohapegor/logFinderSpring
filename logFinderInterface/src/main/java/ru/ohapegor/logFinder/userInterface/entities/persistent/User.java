@@ -98,10 +98,11 @@ public class User{
     public User() {
     }
 
-    public User(String userName, String password, String description, Set<Group> groups) {
+    public User(String userName, String email, String password, String description, Set<Group> groups) {
         this.userName = userName;
         this.password = password;
         this.description = description;
         this.groups = groups;
+        this.email = email;
     }
 }

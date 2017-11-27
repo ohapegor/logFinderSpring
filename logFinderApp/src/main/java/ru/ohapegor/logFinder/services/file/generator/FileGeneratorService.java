@@ -14,5 +14,4 @@ public interface FileGeneratorService {
 
     String getUniqueFilePath();
 
-    AtomicInteger getCount();
 }

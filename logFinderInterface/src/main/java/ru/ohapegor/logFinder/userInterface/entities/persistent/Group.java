@@ -42,10 +42,6 @@ public class Group{
         this.description = description;
     }
 
-    /*@ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(name = "groupmembers",
-            joinColumns = @JoinColumn(name = "G_NAME"),
-            inverseJoinColumns = @JoinColumn(name = "G_MEMBER"))*/
     @ManyToMany(mappedBy = "groups")
     public Set<User> getUserList() {
         return userList;
@@ -73,10 +69,5 @@ public class Group{
     public String toString() {
         return groupName;
     }
-
-    public static Group NEW_USERS = new Group("NewUsers","Users from DB");
-    public static Group BANNED = new Group("BannedUsers","BannedUsers from DB");
-    public static Group SUPER_ADMINS = new Group("SuperAdmins","Super admins from DS");
-
 
 }
