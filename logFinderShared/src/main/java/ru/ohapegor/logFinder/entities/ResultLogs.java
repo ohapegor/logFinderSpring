@@ -9,9 +9,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import java.util.Calendar;
 
-//import static ru.ohapegor.logFinder.services.log_search.util.SearchLogUtil.getSignificantInfo;
 
-@XmlRootElement(name = "resultLogs")
+@XmlRootElement
 @JsonRootName("resultLogs")
 public class ResultLogs {
 
@@ -22,8 +21,8 @@ public class ResultLogs {
 
     private String content;
 
-    @XmlElement(name = "timeMoment")
-    @JsonProperty("timeMoment")
+    @XmlElement
+    @JsonProperty
     @XmlSchemaType(name = "dateTime")
     public Calendar getTimeMoment() {
         return timeMoment;
@@ -33,8 +32,8 @@ public class ResultLogs {
         this.timeMoment = timeMoment;
     }
 
-    @XmlElement(name = "fileName")
-    @JsonProperty("fileName")
+    @XmlElement
+    @JsonProperty
     public String getFileName() {
         return fileName;
     }
@@ -43,14 +42,22 @@ public class ResultLogs {
         this.fileName = fileName;
     }
 
-    @XmlElement(name = "content")
-    @JsonProperty("content")
+    @XmlElement
+    @JsonProperty
     public String getContent() {
         return content;
     }
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public static ResultLogs of(String filename, Calendar timeMoment, String message){
+        ResultLogs resultLogs = new ResultLogs();
+        resultLogs.setFileName(filename);
+        resultLogs.setTimeMoment(timeMoment);
+        resultLogs.setContent(message);
+        return resultLogs;
     }
 
     @Override

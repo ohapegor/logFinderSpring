@@ -9,11 +9,11 @@ import javax.xml.bind.annotation.XmlRootElement;
 import java.util.List;
 
 
-@XmlRootElement(name = "searchInfoResult")
+@XmlRootElement
 @JsonRootName("searchInfoResult")
 public class SearchInfoResult {
 
-    private long errorCode = CorrectionCheckResult._0.getErrorCode();
+    private long errorCode = 0;
 
     private String errorMessage = CorrectionCheckResult._0.getErrorMessage();
 
@@ -28,14 +28,14 @@ public class SearchInfoResult {
     public SearchInfoResult() {
     }
 
-    public SearchInfoResult(CorrectionCheckResult checkResult) {
-        this.errorCode = checkResult.getErrorCode();
-        this.errorMessage = checkResult.getErrorMessage();
+
+    public SearchInfoResult(CorrectionCheckResult correctionCheckResult) {
+        this.errorMessage = correctionCheckResult.getErrorMessage();
+        this.errorCode = correctionCheckResult.getErrorCode();
     }
 
-
-    @XmlElement(name = "fileLocation")
-    @JsonProperty("fileLocation")
+    @XmlElement
+    @JsonProperty
     public String getFilePath() {
         return filePath;
     }
@@ -44,8 +44,8 @@ public class SearchInfoResult {
         this.filePath = filePath;
     }
 
-    @XmlElement(name = "errorCode")
-    @JsonProperty("errorCode")
+    @XmlElement
+    @JsonProperty
     public long getErrorCode() {
         return errorCode;
     }
@@ -54,8 +54,8 @@ public class SearchInfoResult {
         this.errorCode = errorCode;
     }
 
-    @XmlElement(name = "errorMessage")
-    @JsonProperty("errorMessage")
+    @XmlElement
+    @JsonProperty
     public String getErrorMessage() {
         return errorMessage;
     }
@@ -64,8 +64,8 @@ public class SearchInfoResult {
         this.errorMessage = errorMessage;
     }
 
-    @XmlElement(name = "emptyResultMessage")
-    @JsonProperty("emptyResultMessage")
+    @XmlElement
+    @JsonProperty
     public String getEmptyResultMessage() {
         return emptyResultMessage;
     }
@@ -74,8 +74,8 @@ public class SearchInfoResult {
         this.emptyResultMessage = emptyResultMessage;
     }
 
-    @XmlElement(name = "resultLogs")
-    @JsonProperty("resultLogs")
+    @XmlElement
+    @JsonProperty
     public List<ResultLogs> getResultLogs() {
         return resultLogs;
     }
@@ -84,8 +84,8 @@ public class SearchInfoResult {
         this.resultLogs = resultLogs;
     }
 
-    @XmlElement(name = "searchInfo")
-    @JsonProperty("searchInfo")
+    @XmlElement
+    @JsonProperty
     public SearchInfo getSearchInfo() {
         return searchInfo;
     }
@@ -94,18 +94,21 @@ public class SearchInfoResult {
         this.searchInfo = searchInfo;
     }
 
-    public static SearchInfoResult of(SearchInfo searchInfo){
-        SearchInfoResult searchInfoResult = new SearchInfoResult();
-        searchInfoResult.setSearchInfo(searchInfo);
-        return searchInfoResult;
+    private SearchInfoResult(SearchInfo searchInfo) {
+        this.searchInfo = searchInfo;
     }
 
+    private SearchInfoResult(SearchInfo searchInfo, List<ResultLogs> resultLogs) {
+        this.searchInfo = searchInfo;
+        this.resultLogs = resultLogs;
+    }
+
+    public static SearchInfoResult of(SearchInfo searchInfo){
+        return new SearchInfoResult(searchInfo);
+    }
 
     public static SearchInfoResult of(SearchInfo searchInfo, List<ResultLogs> resultLogs){
-        SearchInfoResult searchInfoResult = new SearchInfoResult();
-        searchInfoResult.setSearchInfo(searchInfo);
-        searchInfoResult.setResultLogs(resultLogs);
-        return searchInfoResult;
+        return new SearchInfoResult(searchInfo,resultLogs);
     }
 
 

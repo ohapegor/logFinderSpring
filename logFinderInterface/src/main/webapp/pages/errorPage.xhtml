@@ -23,7 +23,7 @@
         <hr/>
         <h2>Error : </h2>
         <h:dataTable value="#{facesContext.messageList}" var="message">
-            <h:column><h:outputText style="color: red" value="#{message.summary}"/></h:column>
+            <h:column><h:outputText style="color: red; font-size: large" value="#{message.summary}"/></h:column>
         </h:dataTable>
         <h:outputText style="color: red;" value="#{session.getAttribute('errorMessage')}"/>
     </div>

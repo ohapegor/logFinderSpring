@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<xsl:stylesheet version="1.0"
+<xsl:stylesheet version="2.0"
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-                xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+                xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"
+                xmlns:ls="http://ohapegor.ru/logFinder/services/webServices/soap/schema">
 
-    <xsl:template match="searchInfoResult">
+    <xsl:template match="ls:searchInfoResult">
         <w:document mc:Ignorable="w14 wp14" xmlns:w14="http://schemas.microsoft.com/office/word/2010/wordml"
                     xmlns:wp14="http://schemas.microsoft.com/office/word/2010/wordprocessingDrawing"
                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -53,7 +54,7 @@
                                         <w:szCs w:val="16"/>
                                     </w:rPr>
                                     <w:t>
-                                        <xsl:value-of select="searchInfo/regexp"/>
+                                        <xsl:value-of select="ls:searchInfo/ls:regexp"/>
                                     </w:t>
                                 </w:r>
                             </w:p>
@@ -79,7 +80,7 @@
                                             <w:sz w:val="16"/>
                                             <w:szCs w:val="16"/>
                                         </w:rPr>
-                                        <xsl:value-of select="searchInfo/location"/>
+                                        <xsl:value-of select="ls:searchInfo/ls:location"/>
                                     </w:t>
                                 </w:r>
                             </w:p>
@@ -109,7 +110,7 @@
                             </w:p>
                         </w:tc>
                     </w:tr>
-                    <xsl:for-each select="searchInfo/dateIntervals">
+                    <xsl:for-each select="ls:searchInfo/ls:dateIntervals">
                         <w:tr>
                             <w:tc>
                                 <w:p>
@@ -119,7 +120,7 @@
                                             <w:szCs w:val="16"/>
                                         </w:rPr>
                                         <w:t>
-                                            <xsl:value-of select="dateFrom"/>
+                                            <xsl:value-of select="ls:dateFrom"/>
                                         </w:t>
                                     </w:r>
                                 </w:p>
@@ -132,7 +133,7 @@
                                             <w:szCs w:val="16"/>
                                         </w:rPr>
                                         <w:t>
-                                            <xsl:value-of select="dateTo"/>
+                                            <xsl:value-of select="ls:dateTo"/>
                                         </w:t>
                                     </w:r>
                                 </w:p>
@@ -148,7 +149,6 @@
                         <w:pStyle w:val="Normal"/>
                         <w:jc w:val="center"/>
                         <w:rPr>
-                            <w:b/>
                             <w:b/>
                             <w:bCs/>
                             <w:lang w:val="ru-RU"/>
@@ -177,7 +177,6 @@
                         <w:jc w:val="center"/>
                         <w:rPr>
                             <w:b/>
-                            <w:b/>
                             <w:bCs/>
                             <w:lang w:val="ru-RU"/>
                         </w:rPr>
@@ -191,14 +190,13 @@
                         <w:t>Создатель: Охапкин Егор, ООО «Siblion»</w:t>
                     </w:r>
                 </w:p>
-                <xsl:variable name="logCount" select="count(resultLogs)"/>
+                <xsl:variable name="logCount" select="count(ls:resultLogs)"/>
                 <xsl:if test="$logCount = 0">
                     <w:p>
                         <w:pPr>
                             <w:pStyle w:val="Normal"/>
                             <w:jc w:val="center"/>
                             <w:rPr>
-                                <w:b/>
                                 <w:b/>
                                 <w:bCs/>
                                 <w:lang w:val="ru-RU"/>
@@ -210,14 +208,14 @@
                                 <w:bCs/>
                                 <w:lang w:val="ru-RU"/>
                             </w:rPr>
-                            <w:t><xsl:value-of select="emptyResultMessage"/></w:t>
+                            <w:t><xsl:value-of select="ls:emptyResultMessage"/></w:t>
                         </w:r>
                     </w:p>
                 </xsl:if>
                 <w:p><w:r><w:rPr/></w:r><w:r><w:rPr/></w:r></w:p>
                 <w:p><w:r><w:rPr/></w:r><w:r><w:rPr/></w:r></w:p>
                 <w:p><w:r><w:rPr/></w:r><w:r><w:rPr/></w:r></w:p>
-                <xsl:for-each select="resultLogs">
+                <xsl:for-each select="ls:resultLogs">
                     <w:p>
                         <w:r>
                             <w:t>
@@ -225,15 +223,21 @@
                             </w:t>
                             <w:br/>
                             <w:t>
-                                <xsl:text>Time moment : </xsl:text><xsl:value-of select="timeMoment"/>
+                                <xsl:text>Time moment : </xsl:text><xsl:value-of select="ls:timeMoment"/>
                             </w:t>
                             <w:br/>
                             <w:t>
-                                <xsl:text>File : </xsl:text><xsl:value-of select="fileName"/>
+                                <xsl:text>File : </xsl:text><xsl:value-of select="ls:fileName"/>
                             </w:t>
                             <w:br/>
+                        </w:r>
+                        <w:r>
+                            <w:rPr>
+                                <w:sz w:val="16"/>
+                                <w:szCs w:val="16"/>
+                            </w:rPr>
                             <w:t>
-                                <xsl:value-of select="content"/>
+                                <xsl:value-of select="ls:content"/>
                             </w:t>
                             <w:br/>
                         </w:r>

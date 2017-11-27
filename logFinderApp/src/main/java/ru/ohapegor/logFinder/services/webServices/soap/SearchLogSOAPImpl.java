@@ -1,38 +1,46 @@
 package ru.ohapegor.logFinder.services.webServices.soap;
 
+
+
+import org.springframework.context.annotation.Scope;
+import org.springframework.ws.server.endpoint.annotation.Endpoint;
+import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
+import org.springframework.ws.server.endpoint.annotation.RequestPayload;
+import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
 import ru.ohapegor.logFinder.entities.InvalidSearchInfoException;
-import ru.ohapegor.logFinder.entities.SearchInfo;
+import ru.ohapegor.logFinder.entities.LogSearchRequest;
+import ru.ohapegor.logFinder.entities.LogSearchResponse;
 import ru.ohapegor.logFinder.entities.SearchInfoResult;
 import ru.ohapegor.logFinder.services.webServices.AbstractWebService;
 
-import javax.enterprise.context.RequestScoped;
-import javax.jws.WebMethod;
-import javax.jws.WebService;
-
 import static org.apache.commons.lang.exception.ExceptionUtils.getStackTrace;
 
+@Endpoint
+@Scope("request")
+public class SearchLogSOAPImpl extends AbstractWebService {
 
-@WebService(endpointInterface = "ru.ohapegor.logFinder.services.webServices.soap.SearchLogSOAP",
-serviceName = "SearchLogSOAPService",
-portName = "SearchLogSOAPPort")
-public class SearchLogSOAPImpl extends AbstractWebService implements SearchLogSOAP{
+    private static final String NAMESPACE_URI = "http://ohapegor.ru/logFinder/services/webServices/soap/schema";
 
-    @WebMethod
-    @Override
-    public SearchInfoResult logSearch(SearchInfo searchInfo) {
-        logger.info("Entering SearchLogSOAPImpl.logSearch()" + searchInfo);
+    @PayloadRoot(namespace = NAMESPACE_URI, localPart = "logSearchRequest")
+    @ResponsePayload
+    public LogSearchResponse logSearch(@RequestPayload LogSearchRequest logSearchRequest) {
+        logger.info("Entering SearchLogSOAPImpl.logSearch()" + logSearchRequest);
         SearchInfoResult searchInfoResult = null;
         try {
-            searchInfoResult = logSearchBL(searchInfo);
-        } catch (Exception e) {
-           if (e.getCause() instanceof InvalidSearchInfoException){
-               InvalidSearchInfoException ex = (InvalidSearchInfoException)e.getCause();
-               searchInfoResult = new SearchInfoResult(ex.getCorrectionCheckResult());
-           } else {
-              logger.error("Exception in SearchLogSOAPImpl.logSearch(): "+getStackTrace(e));
-           }
+
+
+            //invoke business method
+            searchInfoResult = logSearchBL(logSearchRequest.getSearchInfo());
+
+
+        }catch (InvalidSearchInfoException e) {
+            logger.info("Incorrect searchInfo : "+ e.getCorrectionCheckResult()+" Exiting SearchLogSOAP.logSearch()");
+            searchInfoResult = new SearchInfoResult(e.getCorrectionCheckResult());
+        }catch (Exception e){
+                logger.error("Exception in SearchLogSOAPImpl.logSearch(): "+ getStackTrace(e));
         }
-        logger.info("Exiting SearchLogSOAPImpl.logSearch(SearchInfo searchInfo)");
-        return searchInfoResult;
+        logger.info("Exiting SearchLogSOAPImpl.logSearch()");
+        return new LogSearchResponse(searchInfoResult);
     }
+
 }

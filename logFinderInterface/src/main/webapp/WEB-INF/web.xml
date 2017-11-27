@@ -4,7 +4,7 @@
          version="3.1">
 
     <resource-ref>
-        <res-ref-name>jdbc/myDataSource</res-ref-name>
+        <res-ref-name>myDataSource</res-ref-name>
         <res-type>javax.sql.DataSource</res-type>
         <res-auth>Container</res-auth>
     </resource-ref>
@@ -20,43 +20,6 @@
         <url-pattern>*.xhtml</url-pattern>
     </servlet-mapping>
 
-
-    <!--
-        <security-constraint>
-            <web-resource-collection>
-                <web-resource-name>protected</web-resource-name>
-                <url-pattern>/pages/*</url-pattern>
-            </web-resource-collection>
-            <auth-constraint/>
-        </security-constraint>-->
-
-    <!--<security-constraint>
-        <web-resource-collection>
-            <web-resource-name>protected</web-resource-name>
-            <url-patteUserInterfaceServletface.xhtml</url-pattern>
-        </web-resource-collection>
-        <auth-constraint>
-            <role-name>User</role-name>
-            <role-name>SuperAdmin</role-name>
-        </auth-constraint>
-    </security-constraint>
-    <security-constraint>
-        <web-resource-collection>
-            <web-resource-name>protected1</web-resource-name>
-            <url-pattern>/adminPage.xhtml</url-pattern>
-        </web-resource-collection>
-        <auth-constraint>
-            <role-name>SuperAdmin</role-name>
-        </auth-constraint>
-    </security-constraint>
-    <login-config>
-        <auth-method>FORM</auth-method>
-        <form-login-config>
-            &lt;!&ndash;<form-login-palogin1.xhtmlhtml</form-login-page>&ndash;&gt;
-            <form-login-palogin.xhtmlhtml</form-login-page>
-            <form-error-page>/errorPage.xhtml</form-error-page>
-        </form-login-config>
-    </login-config>-->
     <security-role>
         <role-name>User</role-name>
     </security-role>
@@ -76,11 +39,8 @@
         <location>/pages/login.xhtml</location>
     </error-page>
 
-    <!--<env-entry>
-        <env-entry-name>propertiesLocation</env-entry-name>
-        <env-entry-type>java.lang.String</env-entry-type>
-        <env-entry-value>G:\Egor\Work\Projects\LogReader\logFinder\config\properties.properties</env-entry-value>
-    </env-entry>-->
-
+    <listener>
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    </listener>
 
 </web-app>

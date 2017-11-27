@@ -26,11 +26,6 @@
                 });
             });
         });
-        function confirmExit() {
-            if (confirm("Press Ok to Exit")) {
-                return true;
-            } else return false;
-        }
     </script>
 </h:head>
 
@@ -111,13 +106,9 @@
         </h:form>
     </div>
         <div style="position: absolute; right:100px; top: 400px; display: inline-block" class="interface">
-          <!--<a href="about:blank" target="" onclick="return confirmExit()">
-                  <h:commandButton value="Выход"/>
-            </a>-->
-            <h:form>
-                <h:commandButton value="Выход" onclick="return confirmExit()" action="exit"/>
-            </h:form>
-
+          <a href="about:blank" target="">
+                <h:commandButton value="Выход"/>
+            </a>
         </div>
 </h:body>
 </html>

@@ -82,7 +82,7 @@
     </binding>
     <service name="SearchLogSOAPService">
         <port name="SearchLogSOAPPort" binding="tns:SearchLogSOAPPortBinding">
-            <soap:address location="http://localhost:7003/logFinder/SearchLogSOAPService"/>
+            <soap:address location="http://localhost:7001/logFinder/SearchLogSOAPService"/>
         </port>
     </service>
 </definitions>

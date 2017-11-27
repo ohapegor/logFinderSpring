@@ -1,20 +1,22 @@
 package ru.ohapegor.logFinder.userInterface.entities.persistent;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Set;
 
 @Entity
 @Table(name = "users")
-public class User{
+public class User implements Serializable {
 
     private String userName;
     private String password;
     private Calendar registrationTime;
     private String description;
-    private Set<Group> groups;
     private String email;
+    private Set<Group> groups;
     private String messageToSend;
+
     private boolean Banned;
 
     @Transient
@@ -26,6 +28,7 @@ public class User{
         this.messageToSend = messageToSend;
     }
 
+
     @Transient
     public boolean isBanned() {
         return Banned;
@@ -34,6 +37,8 @@ public class User{
     public void setBanned(boolean banned) {
         Banned = banned;
     }
+
+
 
     @Id
     @Column(name = "U_NAME")
@@ -63,7 +68,7 @@ public class User{
         this.password = password;
     }
 
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "registration_time")
     public Calendar getRegistrationTime() {
         return registrationTime;
@@ -83,7 +88,7 @@ public class User{
     }
 
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "groupmembers",
             joinColumns = @JoinColumn(name = "G_MEMBER"),
             inverseJoinColumns = @JoinColumn(name = "G_NAME"))
@@ -98,11 +103,11 @@ public class User{
     public User() {
     }
 
-    public User(String userName, String email, String password, String description, Set<Group> groups) {
+    public User(String userName, String password, String description, Set<Group> groups, String email) {
         this.userName = userName;
         this.password = password;
         this.description = description;
-        this.groups = groups;
         this.email = email;
+        this.groups = groups;
     }
 }

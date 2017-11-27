@@ -10,7 +10,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import java.util.Calendar;
 
-@XmlRootElement(name = "significantDateInterval")
+@XmlRootElement
 @JsonRootName("significantDateInterval")
 public class SignificantDateInterval {
 
@@ -31,9 +31,9 @@ public class SignificantDateInterval {
         return new SignificantDateInterval(dateFrom,dateTo);
     }
 
-    @XmlElement(name = "dateFrom")
+    @XmlElement
     @XmlSchemaType(name = "dateTime")
-    @JsonProperty("dateFrom")
+    @JsonProperty
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     public Calendar getDateFrom() {
         return dateFrom;
@@ -43,9 +43,9 @@ public class SignificantDateInterval {
         this.dateFrom = dateFrom;
     }
 
-    @XmlElement(name = "dateTo")
+    @XmlElement
     @XmlSchemaType(name = "dateTime")
-    @JsonProperty("dateTo")
+    @JsonProperty
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     public Calendar getDateTo() {
         return dateTo;
@@ -76,8 +76,8 @@ public class SignificantDateInterval {
     @Override
     public String toString() {
         return "SignificantDateInterval{" +
-                "dateFrom=" + dateFrom.getTime() +
-                ", dateTo=" + dateTo.getTime() +
+                "dateFrom=" +(dateFrom == null?null:dateFrom.getTime().toString()) +
+                ", dateTo=" + (dateTo == null?null:dateTo.getTime().toString()) +
                 '}';
     }
 }

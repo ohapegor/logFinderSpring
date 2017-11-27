@@ -22,11 +22,12 @@ http://xmlns.oracle.com/weblogic/weblogic-web-app/1.4/weblogic-web-app.xsd">
     </security-role-assignment>
 
     <resource-description>
-        <res-ref-name>jdbc/myUsersDS</res-ref-name>
+        <res-ref-name>myUsersDS</res-ref-name>
         <jndi-name>jdbc/usersDS</jndi-name>
     </resource-description>
 
-   <!-- <work-manager>
+<!--
+    <work-manager>
         <name>myWorkManager</name>
         <max-threads-constraint>
             <name>MaxThreadsCount</name>
@@ -34,5 +35,6 @@ http://xmlns.oracle.com/weblogic/weblogic-web-app/1.4/weblogic-web-app.xsd">
         </max-threads-constraint>
     </work-manager>
 -->
+
 
 </weblogic-web-app>

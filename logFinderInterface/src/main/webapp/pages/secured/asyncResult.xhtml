@@ -30,6 +30,7 @@
                 <h:outputLabel for="download" value="Generated file path:" rendered="#{itfBean.result.errorCode eq 0}"/>
                 <h:commandLink id="download" value="#{itfBean.result.filePath}" action="#{itfBean.download}"
                                rendered="#{itfBean.result.errorCode eq 0}"/>
+                <h:outputText value="#{itfBean.result.emptyResultMessage}" rendered="#{not empty itfBean.result.emptyResultMessage}"/>
             </h:panelGrid>
             <br/>
             <h:commandButton value="Повторить поиск" action="#{itfBean.goBack}" style="width: 200px"/>

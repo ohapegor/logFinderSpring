@@ -8,7 +8,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.List;
 
-@XmlRootElement(name = "searchInfo")
+@XmlRootElement
 @JsonRootName("searchInfo")
 public class SearchInfo {
 
@@ -22,8 +22,8 @@ public class SearchInfo {
 
     private String fileExtension;
 
-    @XmlElement(name = "regexp")
-    @JsonProperty("regexp")
+    @XmlElement
+    @JsonProperty
     public String getRegexp() {
         return regexp;
     }
@@ -32,18 +32,18 @@ public class SearchInfo {
         this.regexp = regexp;
     }
 
-    @XmlElement(name = "dateIntervals")
-    @JsonProperty("dateIntervals")
+    @XmlElement
+    @JsonProperty
     public List<SignificantDateInterval> getDateIntervals() {
         return dateIntervals;
     }
 
-    public void setDateIntervals(List<SignificantDateInterval> dateInterval) {
-        this.dateIntervals = dateInterval;
+    public void setDateIntervals(List<SignificantDateInterval> dateIntervals) {
+        this.dateIntervals = dateIntervals;
     }
 
-    @XmlElement(name = "location")
-    @JsonProperty("location")
+    @XmlElement
+    @JsonProperty
     public String getLocation() {
         return location;
     }
@@ -52,8 +52,8 @@ public class SearchInfo {
         this.location = location;
     }
 
-    @XmlElement(name = "realization")
-    @JsonProperty("realization")
+    @XmlElement
+    @JsonProperty
     public boolean getRealization() {
         return realization;
     }
@@ -62,8 +62,8 @@ public class SearchInfo {
         this.realization = realization;
     }
 
-    @XmlElement(name = "fileExtension")
-    @JsonProperty("fileExtension")
+    @XmlElement
+    @JsonProperty
     public String getFileExtension() {
         return fileExtension;
     }

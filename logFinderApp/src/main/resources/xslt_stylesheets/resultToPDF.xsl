@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xsl:stylesheet version="1.0"
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-                xmlns:fo="http://www.w3.org/1999/XSL/Format">
+                xmlns:fo="http://www.w3.org/1999/XSL/Format"
+                xmlns:ls="http://ohapegor.ru/logFinder/services/webServices/soap/schema">
     <xsl:output method="xml" indent="yes"/>
-    <xsl:template match="searchInfoResult">
+    <xsl:template match="ls:searchInfoResult">
         <fo:root>
             <fo:layout-master-set>
                 <fo:simple-page-master master-name="A4-portrait"
@@ -35,7 +36,7 @@
                                     </fo:table-cell>
                                     <fo:table-cell border="solid 0.5mm black">
                                         <fo:block>
-                                            <xsl:value-of select="searchInfo/regexp"/>
+                                            <xsl:value-of select="ls:searchInfo/ls:regexp"/>
                                         </fo:block>
                                     </fo:table-cell>
                                 </fo:table-row>
@@ -47,14 +48,14 @@
                                     </fo:table-cell>
                                     <fo:table-cell border="solid 0.5mm black">
                                         <fo:block>
-                                            <xsl:value-of select="search-info/location"/>
+                                            <xsl:value-of select="ls:searchInfo/ls:location"/>
                                         </fo:block>
                                     </fo:table-cell>
                                 </fo:table-row>
                                 <fo:table-row>
                                     <fo:table-cell border="solid 0.5mm black">
                                         <fo:block>
-                                            <xsl:text>Начальное время</xsl:text>
+                                            <xsl:text>DateFrom</xsl:text>
                                         </fo:block>
                                     </fo:table-cell>
                                     <fo:table-cell border="solid 0.5mm black">
@@ -63,16 +64,16 @@
                                         </fo:block>
                                     </fo:table-cell>
                                 </fo:table-row>
-                                <xsl:for-each select="searchInfo/dateIntervals">
+                                <xsl:for-each select="ls:searchInfo/ls:dateIntervals">
                                     <fo:table-row font="10pt Arial">
                                         <fo:table-cell border="solid 0.5mm black">
                                             <fo:block>
-                                                <xsl:value-of select="dateFrom"/>
+                                                <xsl:value-of select="ls:dateFrom"/>
                                             </fo:block>
                                         </fo:table-cell>
                                         <fo:table-cell border="solid 0.5mm black">
                                             <fo:block>
-                                                <xsl:value-of select="dateTo"/>
+                                                <xsl:value-of select="ls:dateTo"/>
                                             </fo:block>
                                         </fo:table-cell>
                                     </fo:table-row>
@@ -88,34 +89,34 @@
                             Разработал : Охапкин Егор, ООО «Siblion»
                         </fo:block>
                     </fo:block-container>
-                    <xsl:variable name="logsN" select="count(resultLogs)"/>
+                    <xsl:variable name="logsN" select="count(ls:resultLogs)"/>
                         <fo:block-container space-before="30cm">
                             <xsl:if test="$logsN = 0">
                                 <fo:block text-align="center">
-                                    <xsl:value-of select="emptyResultMessage"/>
+                                    <xsl:value-of select="ls:emptyResultMessage"/>
                                 </fo:block>
                             </xsl:if>
                             <xsl:if test="$logsN > 0">
                             <fo:block text-align="center" font-size="20pt">
                                 Найденные логи
                             </fo:block>
-                            <xsl:for-each select="resultLogs">
+                            <xsl:for-each select="ls:resultLogs">
                                 <fo:block space-before="0.25cm">
                                     Log <xsl:value-of select="position()"/>
                                 </fo:block>
                                 <fo:block>
                                     Time moment:
-                                    <xsl:value-of select="timeMoment"/>
+                                    <xsl:value-of select="ls:timeMoment"/>
                                 </fo:block>
                                 <fo:block>
                                     File:
-                                    <xsl:value-of select="fileName"/>
+                                    <xsl:value-of select="ls:fileName"/>
                                 </fo:block>
                                 <fo:block>
                                     Message:
                                 </fo:block>
                                 <fo:block space-after="0.25cm" font-size="8pt">
-                                    <xsl:value-of select="content"/>
+                                    <xsl:value-of select="ls:content"/>
                                 </fo:block>
                             </xsl:for-each>
                             </xsl:if>

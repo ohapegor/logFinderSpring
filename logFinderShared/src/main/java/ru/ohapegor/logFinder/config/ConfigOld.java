@@ -6,12 +6,16 @@ import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
 
-public class ConfigOld {
+import java.io.FileNotFoundException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
-     //apache commons configuration v1
+ class ConfigOld {
+
+
     private static PropertiesConfiguration propertiesConfiguration;
 
-    private static final String propertiesLocation = "G:\\Egor\\Work\\Projects\\LogReader\\logFinder\\config\\properties.properties";
+    private static String propertiesLocation = "G:\\Egor\\Work\\Projects\\LogReader\\spring\\logFinder\\config\\properties.properties";
 
     private static void init(){
         try {
@@ -37,5 +41,12 @@ public class ConfigOld {
     public static int getInt(String key){
         return propertiesConfiguration.getInt(key);
     }
+
+    /*public static void main(String[] args) throws InterruptedException {
+        while (true){
+            Thread.sleep(1000);
+            System.out.println("configuration = " +getProperties().getString("DELETE_INTERVAL"));
+        }
+    }*/
 
 }

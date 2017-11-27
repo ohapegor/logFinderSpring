@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<xsl:stylesheet version="1.0"
-                xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+<xsl:stylesheet version="2.0"
+                xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+                xmlns:ls="http://ohapegor.ru/logFinder/services/webServices/soap/schema">
     <xsl:template match="/">
         <html>
             <head>
@@ -37,13 +38,13 @@
                     <tr>
                         <td>Regular expression :</td>
                         <td id="regexp">
-                            <xsl:value-of select="searchInfoResult/searchInfo/regexp"/>
+                            <xsl:value-of select="ls:searchInfoResult/ls:searchInfo/ls:regexp"/>
                         </td>
                     </tr>
                     <tr>
                         <td>Search location :</td>
                         <td id="location">
-                            <xsl:value-of select="searchInfoResult/searchInfo/location"/>
+                            <xsl:value-of select="ls:searchInfoResult/ls:searchInfo/ls:location"/>
                         </td>
                     </tr>
                     <tr>
@@ -55,20 +56,20 @@
                         <td>Date From</td>
                         <td>Date To</td>
                     </tr>
-                    <xsl:for-each select="searchInfoResult/searchInfo/dateIntervals">
+                    <xsl:for-each select="ls:searchInfoResult/ls:searchInfo/ls:dateIntervals">
                         <tr>
                             <td>
-                                <xsl:value-of select="dateFrom"/>
+                                <xsl:value-of select="ls:dateFrom"/>
                             </td>
                             <td>
-                                <xsl:value-of select="dateTo"/>
+                                <xsl:value-of select="ls:dateTo"/>
                             </td>
                         </tr>
                     </xsl:for-each>
                 </table>
-                <xsl:variable name="logCount" select="count(searchInfoResult/resultLogs)"/>
+                <xsl:variable name="logCount" select="count(ls:searchInfoResult/ls:resultLogs)"/>
                 <xsl:if test="$logCount = 0">
-                    <h1 align="center"><xsl:value-of select="searchInfoResult/emptyResultMessage"/></h1>
+                    <h1 align="center"><xsl:value-of select="ls:searchInfoResult/ls:emptyResultMessage"/></h1>
                 </xsl:if>
                 <xsl:if test="$logCount > 0">
                     <table id="logs" border="1">
@@ -80,16 +81,16 @@
                             <th>File Name</th>
                             <th>Content</th>
                         </tr>
-                        <xsl:for-each select="searchInfoResult/resultLogs">
+                        <xsl:for-each select="ls:searchInfoResult/ls:resultLogs">
                             <tr>
                                 <td>
-                                    <xsl:value-of select="timeMoment"/>
+                                    <xsl:value-of select="ls:timeMoment"/>
                                 </td>
                                 <td>
-                                    <xsl:value-of select="fileName"/>
+                                    <xsl:value-of select="ls:fileName"/>
                                 </td>
                                 <td>
-                                    <xsl:value-of select="content"/>
+                                    <xsl:value-of select="ls:content"/>
                                 </td>
                             </tr>
                         </xsl:for-each>

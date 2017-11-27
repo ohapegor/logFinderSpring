@@ -10,8 +10,9 @@ public enum CorrectionCheckResult {
     _37("Missed mandatory parameter",37),
     _44("Incorrect resource name",44),
     _3701("Missed async method file extension",3701);
-    private String errorMessage;
     private int errorCode;
+    private String errorMessage;
+
 
     CorrectionCheckResult(String comment, int errorCode) {
         this.errorMessage = comment;
@@ -24,5 +25,14 @@ public enum CorrectionCheckResult {
 
     public int getErrorCode() {
         return errorCode;
+    }
+
+    @Override
+    public String toString() {
+
+        return "CorrectionCheckResult{" +
+                "errorCode=" + errorCode +
+                ", errorMessage='" + errorMessage + '\'' +
+                '}';
     }
 }

@@ -7,6 +7,7 @@ import java.util.Calendar;
 
 public class FormDate {
 
+    //private final static Logger logger = Logger.getLogger(FormDate.class.getName());
     private static final Logger logger = LogManager.getLogger();
 
     private Calendar calendar = Calendar.getInstance();

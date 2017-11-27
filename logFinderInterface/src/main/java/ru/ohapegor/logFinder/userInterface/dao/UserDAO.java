@@ -7,16 +7,15 @@ import java.util.List;
 
 public interface UserDAO {
 
-    List<User> getAllUsers();
+    void updateUser(User user);
+
+    User getUserByName(String username);
 
     void saveUser(User user);
 
-    User getUserByName(String userName);
+    List<User> getAllUsers();
 
     void deleteUser(User user);
 
-    void updateUser(User user);
 
 }
-
-
