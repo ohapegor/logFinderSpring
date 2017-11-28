@@ -88,7 +88,7 @@ public class User implements Serializable {
     }
 
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER,cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "groupmembers",
             joinColumns = @JoinColumn(name = "G_MEMBER"),
             inverseJoinColumns = @JoinColumn(name = "G_NAME"))
@@ -103,7 +103,7 @@ public class User implements Serializable {
     public User() {
     }
 
-    public User(String userName, String password, String description, Set<Group> groups, String email) {
+    public User(String userName, String password, String email, String description, Set<Group> groups) {
         this.userName = userName;
         this.password = password;
         this.description = description;

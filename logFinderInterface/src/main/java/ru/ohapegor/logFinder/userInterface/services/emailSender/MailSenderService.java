@@ -10,6 +10,8 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import ru.ohapegor.logFinder.userInterface.services.jmsSender.JmsMessage;
 
+import java.util.Date;
+
 @Service
 public class MailSenderService {
 
@@ -27,11 +29,15 @@ public class MailSenderService {
                 destination = "jms/TestJMSQueue")
     public void processMessage(JmsMessage jmsMessage) {
         logger.info("MailSender received message = " + jmsMessage.getMessage()+" to "+jmsMessage.getAddress());
+        long start = new Date().getTime();
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom("ohapegor2704@gmail.com");
+        message.setFrom("logfinderadm@gmail.com");
         message.setTo(jmsMessage.getAddress());
         message.setSubject("Message from logFinder's SuperAdmin");
         message.setText(jmsMessage.getMessage());
         javaMailSender.send(message);
+        long end = new Date().getTime();
+        logger.info("Email successfully send, method execution : "+(end-start)+" ms");
+
     }
 }

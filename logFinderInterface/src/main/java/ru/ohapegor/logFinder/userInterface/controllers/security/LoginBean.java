@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import ru.ohapegor.logFinder.userInterface.dao.GroupDAO;
 import ru.ohapegor.logFinder.userInterface.entities.persistent.Group;
 import ru.ohapegor.logFinder.userInterface.entities.persistent.User;
 import ru.ohapegor.logFinder.userInterface.services.userService.UserService;
@@ -24,15 +25,20 @@ import static org.apache.commons.lang.exception.ExceptionUtils.getStackTrace;
 @Scope("session")
 public class LoginBean {
 
-    //private final static Logger logger = Logger.getLogger(UserInterfaceBean.class.getName());
     private static final Logger logger = LogManager.getLogger(LoginBean.class.getSimpleName());
 
     private UserService userService;
 
+    private GroupDAO groupDAO;
+
     @Autowired
-    @Qualifier("userService")
     public void setUserService(UserService userService) {
         this.userService = userService;
+    }
+
+    @Autowired
+    public void setGroupDAO(GroupDAO groupDAO){
+        this.groupDAO = groupDAO;
     }
 
     private String userName;
@@ -91,14 +97,15 @@ public class LoginBean {
         try {
             request.logout();
             request.login(this.userName, this.password);
-            session.setAttribute("username", userName);
+            session.setAttribute("userName", userName);
             session.setAttribute("password", password);
-            logger.fatal("User successfully logged in, userName : "+userName);
+            //fatal level to store log in database
+            logger.fatal("User successfully logged in, userName : " + userName);
             userName = null;
             password = null;
         } catch (ServletException e) {
             logger.info("Exception in LoginBean.login() : " + getStackTrace(e));
-            context.addMessage(null, new FacesMessage("Login failed. "+e));
+            context.addMessage(null, new FacesMessage("Login failed. " + e));
             return "/pages/errorPage";
         }
         return "/pages/home?faces-redirect=true";
@@ -109,76 +116,76 @@ public class LoginBean {
         HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
         HttpSession session = request.getSession(false);
         try {
-            if (session.getAttribute("username") != null) userName = String.valueOf(session.getAttribute("username"));
+            if (session.getAttribute("userName") != null) {
+                userName = String.valueOf(session.getAttribute("userName"));
+            }
             request.logout();
             request.getSession().invalidate();
-            logger.fatal("User successfully logged out, userName : "+userName);
+            //fatal level to store log in database
+            logger.fatal("User successfully logged out, userName : " + userName);
             userName = null;
             password = null;
         } catch (Exception e) {
-            session = request.getSession(true);
-            session.setAttribute("errorMessage", "logoutFailed, Exception : " + e);
             context.addMessage(null, new FacesMessage("Logout failed."));
-            logger.info("Exception in LoginBean.logout() : " + e);
+            logger.info("Exception in LoginBean.logout() : " + getStackTrace(e));
             return "/pages/errorPage";
         }
 
         return "/pages/login?faces-redirect=true";
     }
 
-    public void exit() {
-        FacesContext context = FacesContext.getCurrentInstance();
-        HttpSession session = (HttpSession) context.getExternalContext().getSession(false);
-        if (session != null) session.invalidate();
-        //return "about:blank";
-    }
-
     public String register() {
         logger.info("Entering in LoginBean.register()");
         FacesContext context = FacesContext.getCurrentInstance();
 
-        if (userName == null || userName.equals("")){
-            context.addMessage("", new FacesMessage(">>Empty User Name<<"));
+        if (userName == null || userName.equals("")) {
+            context.addMessage(null, new FacesMessage(">>Empty User Name<<"));
             return "/pages/registration";
         }
 
-        if (userName.length() < 5 || userName.length() > 15){
-            context.addMessage("", new FacesMessage(">>Username length must be between 5 and 15 characters<<"));
+        if (userName.length() < 5 || userName.length() > 15) {
+            context.addMessage(null, new FacesMessage(">>Username length must be between 5 and 15 characters<<"));
             return "/pages/registration";
         }
 
-        if (password == null || password.equals("")){
-            context.addMessage("", new FacesMessage(">>Empty password<<"));
+        if (userEmail == null || userEmail.equals("")) {
+            context.addMessage(null, new FacesMessage(">>Empty Email<<"));
             return "/pages/registration";
         }
 
-        if (password.length() < 10 || userName.length() > 25){
-            context.addMessage("", new FacesMessage(">>Password length must be between 10 and 25 characters<<"));
+
+        if (password == null || password.equals("")) {
+            context.addMessage(null, new FacesMessage(">>Empty password<<"));
             return "/pages/registration";
         }
 
+        if (password.length() < 10 || userName.length() > 25) {
+            context.addMessage(null, new FacesMessage(">>Password length must be between 10 and 25 characters<<"));
+            return "/pages/registration";
+        }
 
         if (!password.equals(confirmPassword)) {
-            context.addMessage("", new FacesMessage(">>Passwords don't match<<"));
+            context.addMessage(null, new FacesMessage(">>Passwords don't match<<"));
             return "/pages/registration";
         }
 
-        try{
+        try {
             User user = userService.getUserByName(userName);
             if (user != null) {
-                context.addMessage("", new FacesMessage(">>User already exists!<<"));
-                return "/pages/registration";
+                context.addMessage(null, new FacesMessage(">>User already exists!<<"));
+            } else {
+                String description = "Registration time: " + new Date().toString();
+                user = new User(userName, password, userEmail, description, Collections.singleton(groupDAO.getGroupByName("NewUsers")));
+                userService.saveUser(user);
+                context.addMessage(null, new FacesMessage("User : " + userName + " successfully registered!"));
+                //fatal level to store log in database
+                logger.fatal("Developer's log: New user registered, userName : " + userName);
             }
-
-            String description = "Registration time: " + new Date().toString();
-            user = new User(userName, password, description,  Collections.singleton(Group.NEW_USERS), userEmail);
-            userService.saveUser(user);
-
-            context.addMessage(null, new FacesMessage("User : " + userName + " successfully registered!"));
-            logger.fatal("Developer's log: New user registered, userName : "+userName);
-        }catch (Exception e){
-            logger.error("Exception in LoginBean.register(), e : "+getStackTrace(e));
-            context.addMessage(null, new FacesMessage("Exception in LoginBean.register(), e : "+getStackTrace(e)));
+            userName = null;
+            userEmail = null;
+        } catch (Exception e) {
+            logger.error("Exception in LoginBean.register(), e : " + getStackTrace(e));
+            context.addMessage(null, new FacesMessage("Exception in LoginBean.register(), e : " + getStackTrace(e)));
         }
         return "/pages/registration";
 

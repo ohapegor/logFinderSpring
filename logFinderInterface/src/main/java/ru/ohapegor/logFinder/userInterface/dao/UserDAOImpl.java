@@ -11,7 +11,7 @@ import ru.ohapegor.logFinder.userInterface.entities.persistent.User;
 
 import java.util.List;
 
-@Repository("userDAO")
+@Repository
 public class UserDAOImpl implements UserDAO {
 
     private static final Logger logger = LogManager.getLogger();

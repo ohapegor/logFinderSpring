@@ -9,7 +9,6 @@ import java.text.ParseException;
 
 public class FormDateInterval {
 
-    // final static Logger logger = Logger.getLogger(FormDateInterval.class.getName());
     private static final Logger logger = LogManager.getLogger();
 
     private FormDate dateFrom = new FormDate();
@@ -31,14 +30,6 @@ public class FormDateInterval {
         this.dateTo = dateTo;
     }
 
-    public SignificantDateInterval toSignificantDateInterval() throws ParseException {
-        logger.info("Enter FormDateInterval.toSignificantDateInterval() dateFrom="+dateFrom+" dateTo"+dateTo);
-        SignificantDateInterval significantDateInterval = new SignificantDateInterval();
-        significantDateInterval.setDateFrom(dateFrom.getTime());
-        significantDateInterval.setDateTo(dateTo.getTime());
-        logger.info("Exit FormDateInterval.toSignificantDateInterval() dateFrom="+dateFrom.getTime().getTime()+" dateTo"+dateTo.getTime().getTime());
-        return significantDateInterval;
-    }
 
     @Override
     public String toString() {

@@ -9,6 +9,7 @@ import org.apache.commons.configuration2.reloading.PeriodicReloadingTrigger;
 import java.io.File;
 import java.util.concurrent.TimeUnit;
 
+//apache configuration v2
 public class Config {
 
     private static ReloadingFileBasedConfigurationBuilder<PropertiesConfiguration> builder;
@@ -16,7 +17,7 @@ public class Config {
     //init block
     static {
         Parameters params = new Parameters();
-        File propertiesFile = new File("G:\\Egor\\Work\\Projects\\LogReader\\spring\\logFinder\\config\\properties.properties");
+        File propertiesFile = new File("g:\\Egor\\git\\EO-Test-Spring\\config\\properties.properties");
 
         builder = new ReloadingFileBasedConfigurationBuilder<>(PropertiesConfiguration.class)
                 .configure(params.fileBased().setFile(propertiesFile));
@@ -41,11 +42,4 @@ public class Config {
         }
     }
 
-    public static int getInt(String key) {
-        try {
-            return builder.getConfiguration().getInt(key);
-        } catch (ConfigurationException e) {
-            throw new ConfigException(e);
-        }
-    }
 }

@@ -13,11 +13,11 @@
         <h:form prependId="false">
             <h:panelGrid columns="1" id="navigation">
                 <div style="font-weight: 700; text-shadow: 2px 2px 2px black" align="center">Navigation</div>
-                <h:outputText rendered="#{not empty session.getAttribute('username')}"  value="Current User - #{session.getAttribute('username')}"/>
+                <h:outputText rendered="#{not empty session.getAttribute('userName')}"  value="Current User - #{session.getAttribute('userName')}"/>
                 <hr/>
-                <h:commandButton rendered="#{not empty session.getAttribute('username')}" value="Logout" action="#{loginBean.logout}"/>
-                <h:commandButton rendered="#{empty session.getAttribute('username')}" value="Login" action="/pages/login?faces-redirect=true"/>
-                <h:commandButton rendered="#{empty session.getAttribute('username')}" value="Register" action="/pages/registration?faces-redirect=true"/>
+                <h:commandButton rendered="#{not empty session.getAttribute('userName')}" value="Logout" action="#{loginBean.logout}"/>
+                <h:commandButton rendered="#{empty session.getAttribute('userName')}" value="Login" action="/pages/login?faces-redirect=true"/>
+                <h:commandButton rendered="#{empty session.getAttribute('userName')}" value="Register" action="/pages/registration?faces-redirect=true"/>
                 <h:commandButton value="Go to home" action="/pages/home?faces-redirect=true"/>
             </h:panelGrid>
         </h:form>

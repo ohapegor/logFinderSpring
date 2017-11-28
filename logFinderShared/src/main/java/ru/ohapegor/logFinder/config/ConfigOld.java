@@ -10,12 +10,14 @@ import java.io.FileNotFoundException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+
+//apache configuration v1
  class ConfigOld {
 
 
     private static PropertiesConfiguration propertiesConfiguration;
 
-    private static String propertiesLocation = "G:\\Egor\\Work\\Projects\\LogReader\\spring\\logFinder\\config\\properties.properties";
+    private static String propertiesLocation = "g:\\Egor\\git\\EO-Test-Spring\\config\\properties.properties";
 
     private static void init(){
         try {
@@ -42,11 +44,5 @@ import java.nio.file.Paths;
         return propertiesConfiguration.getInt(key);
     }
 
-    /*public static void main(String[] args) throws InterruptedException {
-        while (true){
-            Thread.sleep(1000);
-            System.out.println("configuration = " +getProperties().getString("DELETE_INTERVAL"));
-        }
-    }*/
 
 }

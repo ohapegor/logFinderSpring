@@ -1,5 +1,25 @@
-function setColorScheme(r, g, b) {
+var style = {
+    body: {
+        bgR: 0,
+        bgG: 0,
+        bgB: 0,
+        fntR: 0,
+        fntG: 0,
+        fntB: 0
+    },
 
+    input: {
+        bgR: 0,
+        bgG:0,
+        bgB: 0,
+        fntR: 0,
+        fntG: 0,
+        fntB: 0
+    }
+
+};
+
+function setColorScheme(r, g, b) {
     var style = {
         body: {
             bgR: r,

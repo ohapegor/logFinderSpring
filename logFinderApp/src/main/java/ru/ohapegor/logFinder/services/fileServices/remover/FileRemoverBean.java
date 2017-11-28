@@ -16,13 +16,10 @@ public class FileRemoverBean {
 
     private static final Logger logger = LogManager.getLogger();
 
-    //@Scheduled(fixedDelayString = "${DELETE_INTERVAL}")
-    @Scheduled(cron = "*/30 * * * * *")//every 30 seconds
+    @Scheduled(cron = "*/30 * * * * *")
     public void removeOldFiles(){
         try {
             logger.info("Invoking FileRemoverBean.removeOldFiles()");
-
-            // properties.load(new FileReader(new File("g:/properties.properties")));
             long currentTime = new Date().getTime();
             File directory = new File(Config.getString("GENERATED_FILE_LOCATION"));
             File[] files = null;
@@ -32,7 +29,7 @@ public class FileRemoverBean {
             if (files != null && files.length > 0) {
                 for (File file : files) {
                     if ((currentTime - file.lastModified()) > Config.getLong("FILE_LIFE_INTERVAL")) {
-                        logger.info("Trying to remove file - " + file.getAbsolutePath() + " success = " + file.delete());
+                        logger.info("Removing file - " + file.getAbsolutePath() + " success = " + file.delete());
                     }
                 }
             }

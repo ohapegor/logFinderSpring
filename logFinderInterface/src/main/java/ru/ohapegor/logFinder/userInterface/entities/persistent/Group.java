@@ -73,11 +73,4 @@ public class Group{
         return groupName;
     }
 
-    public static Group NEW_USERS = new Group("NewUsers","Users from DB");
-
-    public static Group BANNED = new Group("BannedUsers","BannedUsers from DB");
-
-    public static Group SUPER_ADMINS = new Group("SuperAdmins","Super admins from DS");
-
-
 }

@@ -55,54 +55,72 @@
         </div>
         <hr/>
         <h:form prependId="false" id="palette" styleClass="colorMenu">
-            <h:panelGroup>
-                <div onclick="setColorScheme(217,87,45)" style="background-color: rgb(217,87,45)">
-                    <h:commandButton action="#{itfBean.setColorRgb(217,87,45)}">
-                        <f:ajax render="@none"/>
-                    </h:commandButton>
-                </div>
-
-                <div onclick="setColorScheme(110,199,45)" style="background-color: rgb(110,199,45)">
-                    <h:commandButton action="#{itfBean.setColorRgb(110,199,45)}">
-                        <f:ajax render="@none"/>
-                    </h:commandButton>
-                </div>
-                <div onclick="setColorScheme(74,82,196)" style="background-color: rgb(74,82,196)">
-                    <h:commandButton action="#{itfBean.setColorRgb(74,82,196)}">
-                        <f:ajax render="@none"/>
-                    </h:commandButton>
-                </div>
-                <div onclick="setColorScheme(169,245,242)" style="background-color: rgb(169,245,242)">
-                    <h:commandButton action="#{itfBean.setColorRgb(169,245,242)}">
-                        <f:ajax render="@none"/>
-                    </h:commandButton>
-                </div>
-                <div onclick="setColorScheme(17,194,117)" style="background-color: rgb(17,194,117)">
-                    <h:commandButton action="#{itfBean.setColorRgb(17,194,117)}">
-                        <f:ajax render="@none"/>
-                    </h:commandButton>
-                </div>
-                <div onclick="setColorScheme(173, 25, 179)" style="background-color: rgb(173, 25, 179)">
-                    <h:commandButton action="#{itfBean.setColorRgb(173, 25, 179)}">
-                        <f:ajax render="@none"/>
-                    </h:commandButton>
-                </div>
-                <div onclick="setColorScheme(240, 212, 110)" style="background-color: rgb(240, 212, 110)">
-                    <h:commandButton action="#{itfBean.setColorRgb(240, 212, 110)}">
-                        <f:ajax render="@none"/>
-                    </h:commandButton>
-                </div>
-                <div onclick="alert('Color forbidden'); return false" style="background-color: rgb(229, 73, 144)">
-                    <h:commandButton>
-                        <f:ajax render="@none"/>
-                    </h:commandButton>
-                </div>
-                <div onclick="{alert('Color forbidden'); return false}" style="background-color: rgb(214, 41, 67)">
-                    <h:commandButton>
-                        <f:ajax render="@none"/>
-                    </h:commandButton>
-                </div>
-            </h:panelGroup>
+            <table>
+                <tr>
+                    <td><div onclick="setColorScheme(217,87,45)" style="background-color: rgb(217,87,45)">
+                        <h:commandButton action="#{itfBean.setColorRgb(217,87,45)}">
+                            <f:ajax render="@none"/>
+                        </h:commandButton>
+                    </div></td>
+                    <td><div onclick="setColorScheme(110,199,45)" style="background-color: rgb(110,199,45)">
+                        <h:commandButton action="#{itfBean.setColorRgb(110,199,45)}">
+                            <f:ajax render="@none"/>
+                        </h:commandButton>
+                    </div></td>
+                    <td><div onclick="setColorScheme(74,82,196)" style="background-color: rgb(74,82,196)">
+                        <h:commandButton action="#{itfBean.setColorRgb(74,82,196)}">
+                            <f:ajax render="@none"/>
+                        </h:commandButton>
+                    </div></td>
+                    <td><div onclick="setColorScheme(169,155,242)" style="background-color: rgb(169,155,242)">
+                        <h:commandButton action="#{itfBean.setColorRgb(169,155,242)}">
+                            <f:ajax render="@none"/>
+                        </h:commandButton>
+                    </div></td>
+                    <td><div onclick="setColorScheme(169,245,242)" style="background-color: rgb(169,245,242)">
+                        <h:commandButton action="#{itfBean.setColorRgb(169,245,242)}">
+                            <f:ajax render="@none"/>
+                        </h:commandButton>
+                    </div></td>
+                    <td><div onclick="setColorScheme(169,245,2)" style="background-color: rgb(169,245,2)">
+                        <h:commandButton action="#{itfBean.setColorRgb(169,245,2)}">
+                            <f:ajax render="@none"/>
+                        </h:commandButton>
+                    </div></td>
+                </tr>
+                <tr>
+                    <td><div onclick="setColorScheme(17,194,117)" style="background-color: rgb(17,194,117)">
+                        <h:commandButton action="#{itfBean.setColorRgb(17,194,117)}">
+                            <f:ajax render="@none"/>
+                        </h:commandButton>
+                    </div></td>
+                    <td><div onclick="setColorScheme(5,55,35)" style="background-color: rgb(5,55,35)">
+                        <h:commandButton action="#{itfBean.setColorRgb(5,55,35)}">
+                            <f:ajax render="@none"/>
+                        </h:commandButton>
+                    </div></td>
+                    <td><div onclick="setColorScheme(173, 25, 179)" style="background-color: rgb(173, 25, 179)">
+                        <h:commandButton action="#{itfBean.setColorRgb(173, 25, 179)}">
+                            <f:ajax render="@none"/>
+                        </h:commandButton>
+                    </div></td>
+                    <td><div onclick="setColorScheme(240, 212, 110)" style="background-color: rgb(240, 212, 110)">
+                        <h:commandButton action="#{itfBean.setColorRgb(240, 212, 110)}">
+                            <f:ajax render="@none"/>
+                        </h:commandButton>
+                    </div></td>
+                    <td><div onclick="alert('Color forbidden'); return false" style="background-color: rgb(229, 73, 144)">
+                        <h:commandButton>
+                            <f:ajax render="@none"/>
+                        </h:commandButton>
+                    </div></td>
+                    <td><div onclick="{alert('Color forbidden'); return false}" style="background-color: rgb(214, 41, 67)">
+                        <h:commandButton>
+                            <f:ajax render="@none"/>
+                        </h:commandButton>
+                    </div></td>
+                </tr>
+            </table>
         </h:form>
     </div>
         <div style="position: absolute; right:100px; top: 400px; display: inline-block" class="interface">

@@ -3,12 +3,14 @@ package ru.ohapegor.logFinder.userInterface.entities;
 
 public class Style {
 
-    //init Style
-    {
-        this.setColor("A9F5F2");
-        setColorScheme();
+    public static Style of(String color){
+        return new Style(color);
     }
 
+    public Style(String color) {
+        this.color = color;
+        setColorScheme();
+    }
     private String color;
 
     public String getColor() {
@@ -19,9 +21,9 @@ public class Style {
         this.color = color;
     }
 
-    int R;
-    int G;
-    int B;
+    private int R;
+    private int G;
+    private int B;
 
     public void setR(int r) {
         R = r;
@@ -46,7 +48,7 @@ public class Style {
 
     public void setColorScheme() {
         if (color == null || color.length() != 6) {
-            color = "000000";
+            color = "FFFFFF";
         }
 
         try {

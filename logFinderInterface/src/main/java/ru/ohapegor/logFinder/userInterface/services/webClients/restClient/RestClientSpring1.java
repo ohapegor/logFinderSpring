@@ -23,8 +23,10 @@ public class RestClientSpring1 implements SearchLogClient {
         logger.info("Entering "+ this.getClass().getSimpleName()+"logSearch()");
         String restEndpoint = Config.getString("LOG_SEARCH_REST_ENDPOINT")+"1/";
         logger.info("Invoking rest method at : "+restEndpoint);
+
         SearchInfoResult searchInfoResult =  new RestTemplate().postForObject(restEndpoint,
                 searchInfo,SearchInfoResult.class);
+
         logger.info("Exiting "+ this.getClass().getSimpleName()+"logSearch()");
         return searchInfoResult;
     }

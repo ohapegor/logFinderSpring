@@ -10,6 +10,7 @@ import ru.ohapegor.logFinder.entities.*;
 import ru.ohapegor.logFinder.userInterface.entities.*;
 import ru.ohapegor.logFinder.userInterface.services.webClients.SearchLogClient;
 
+import javax.annotation.PostConstruct;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.servlet.ServletOutputStream;
@@ -38,21 +39,25 @@ public class UserInterfaceBean implements Serializable {
 
 
     private List<FormDateInterval> formDateIntervals;
-    private String regExp = ".*Log4j.*";
+    private String regExp;
     private boolean realization = true;
     private String extension;
     private String location;
     private SearchInfo searchInfo;
-    private SearchInfoResult result = new SearchInfoResult();
-    private Style style = new Style();
+    private SearchInfoResult result;
+    private Style style;
 
 
-    //add first date interval in form
-    {
+    @PostConstruct
+    public void init() {
         formDateIntervals = new ArrayList<>();
         FormDateInterval firstInterval = new FormDateInterval();
         formDateIntervals.add(firstInterval);
+        regExp = ".*Log4j.*";
+        style = Style.of("A9F5F2");
     }
+
+
 
     //getters and setters
     public SearchInfoResult getResult() {
@@ -125,7 +130,7 @@ public class UserInterfaceBean implements Serializable {
         //Missed async method file extension
         if (searchInfo.getRealization()) {
             try {
-                FileExtension fileExtension = FileExtension.valueOf(searchInfo.getFileExtension().toUpperCase());
+                FileExtension.valueOf(searchInfo.getFileExtension().toUpperCase());
             } catch (IllegalArgumentException ignored) {
                 logger.info(CorrectionCheckResult._3701.getErrorMessage() + ", exiting UserInterfaceBean.correctionCheck(SearchInfo searchInfo)");
                 throw new InvalidSearchInfoException(CorrectionCheckResult._3701);
@@ -178,20 +183,12 @@ public class UserInterfaceBean implements Serializable {
         } catch (Exception e) {
             throw new InvalidSearchInfoException(CorrectionCheckResult._19);
         }
-
         searchInfo.setDateIntervals(significantDateIntervals);
 
-
-        Calendar dateFrom = null;
-        Calendar dateTo = null;
         for (SignificantDateInterval interval : significantDateIntervals) {
-            if (interval.getDateFrom() == null || interval.getDateTo() == null) {
-                logger.info("Date interval is missing or incorrect, exiting UserInterfaceBean.correctionCheck(SearchInfo searchInfo)");
-                throw new InvalidSearchInfoException(CorrectionCheckResult._37);
-            }
 
-            dateFrom = interval.getDateFrom();
-            dateTo = interval.getDateTo();
+            Calendar dateFrom = interval.getDateFrom();
+            Calendar dateTo = interval.getDateTo();
 
             if (dateFrom.after(Calendar.getInstance())) {
                 logger.info(CorrectionCheckResult._18.getErrorMessage() + " , exiting UserInterfaceBean.correctionCheck(SearchInfo searchInfo)");
@@ -279,10 +276,12 @@ public class UserInterfaceBean implements Serializable {
         } finally {
             try {
                 input.close();
+            } catch (IOException ignored) {
+            }
+            try {
                 output.flush();
                 output.close();
             } catch (IOException ignored) {
-
             }
         }
         facesContext.responseComplete();
