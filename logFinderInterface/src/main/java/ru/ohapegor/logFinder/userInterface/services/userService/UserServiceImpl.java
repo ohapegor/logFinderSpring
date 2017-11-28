@@ -19,7 +19,9 @@ public class UserServiceImpl implements UserService {
     private UserDAO userDAO;
 
     @Autowired
-    @Qualifier("userDao2")
+    @Qualifier("userDaoDataJPA")
+    //@Qualifier("userDaoJpa")
+    //Qualifier("userDaoHibernate")
     public void setUserDAO(UserDAO userDAO) {
         this.userDAO = userDAO;
     }
