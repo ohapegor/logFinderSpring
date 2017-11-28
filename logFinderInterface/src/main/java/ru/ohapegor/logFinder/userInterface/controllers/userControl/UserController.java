@@ -93,10 +93,18 @@ public class UserController {
         logger.info("Exiting UserController.refresh()");
     }
 
-    public void sendMessage(User user)  {
-        logger.info("Entering UserController.sendMessage(); message = " + user.getMessageToSend()+"; address = "+user.getEmail());
+    public void sendMessageTo(User user)  {
+        logger.info("Entering UserController.sendMessageTo(); message = " + user.getMessageToSend()+"; address = "+user.getEmail());
         messageSender.sendJmsMessage(new JmsMessage(user.getMessageToSend(),user.getEmail()));
         user.setMessageToSend(null);
-        logger.info("Exiting UserController.sendMessage()");
+        logger.info("Exiting UserController.sendMessageTo()");
+    }
+
+    public boolean isBanned(User user){
+        return user.getGroups().stream().anyMatch(group -> group.getGroupName().equals("BannedUsers"));
+    }
+
+    public boolean isAdmin(User user){
+        return user.getGroups().stream().anyMatch(group -> group.getGroupName().equals("SuperAdmins"));
     }
 }

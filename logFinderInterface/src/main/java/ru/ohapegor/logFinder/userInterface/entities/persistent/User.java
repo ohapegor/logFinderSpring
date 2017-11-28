@@ -17,8 +17,6 @@ public class User implements Serializable {
     private Set<Group> groups;
     private String messageToSend;
 
-    private boolean Banned;
-
     @Transient
     public String getMessageToSend() {
         return messageToSend;
@@ -27,17 +25,6 @@ public class User implements Serializable {
     public void setMessageToSend(String messageToSend) {
         this.messageToSend = messageToSend;
     }
-
-
-    @Transient
-    public boolean isBanned() {
-        return Banned;
-    }
-
-    public void setBanned(boolean banned) {
-        Banned = banned;
-    }
-
 
 
     @Id

@@ -20,8 +20,8 @@ public class JmsMessageSenderSpring implements JmsMessageSender {
 
     @Override
     public void sendJmsMessage(JmsMessage customJmsMessage) {
-        logger.info("Entering MessageSender.sendMessage()");
+        logger.info("Entering MessageSender.sendMessageTo()");
         jmsTemplate.convertAndSend(customJmsMessage);
-        logger.info("Exiting MessageSender.sendMessage()");
+        logger.info("Exiting MessageSender.sendMessageTo()");
     }
 }

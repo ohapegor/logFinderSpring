@@ -1,53 +1,16 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:tx="http://www.springframework.org/schema/tx"
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:jee="http://www.springframework.org/schema/jee"
        xmlns:p="http://www.springframework.org/schema/p"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans.xsd
-       http://www.springframework.org/schema/tx
-       http://www.springframework.org/schema/tx/spring-tx.xsd
        http://www.springframework.org/schema/context
        http://www.springframework.org/schema/context/spring-context.xsd
        http://www.springframework.org/schema/jee
        http://www.springframework.org/schema/jee/spring-jee.xsd">
 
-
-    <!-- Database Information -->
-    <!--<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
-        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
-        <property name="url" value="jdbc:mysql://localhost:3306/users_db"/>
-        <property name="username" value="root"/>
-        <property name="password" value="root"/>
-    </bean>-->
-    <jee:jndi-lookup id="dataSource"
-                     jndi-name="/jdbc/usersDS"
-                     resource-ref="true"
-                     lookup-on-startup="false"
-                     proxy-interface="javax.sql.DataSource"/>
-
-    <bean id="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
-        <property name="dataSource" ref="dataSource"/>
-        <property name="annotatedClasses">
-            <list>
-                <value>ru.ohapegor.logFinder.userInterface.entities.persistent.User</value>
-                <value>ru.ohapegor.logFinder.userInterface.entities.persistent.Group</value>
-            </list>
-        </property>
-        <property name="hibernateProperties">
-            <props>
-                <prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
-                <prop key="hibernate.show_sql">false</prop>
-            </props>
-        </property>
-    </bean>
-
-    <bean id="transactionManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager">
-        <property name="sessionFactory" ref="sessionFactory"/>
-    </bean>
-
-    <tx:annotation-driven transaction-manager="transactionManager"/>
+    <import resource="spring-db.xml"/>
 
     <context:component-scan base-package="ru.ohapegor.logFinder"/>
 
@@ -56,10 +19,6 @@
                      resource-ref="true"
                      proxy-interface="javax.jms.ConnectionFactory"/>
 
-    <!--<jee:jndi-lookup id="jmsQueue"
-                     jndi-name="jms/TestJMSQueue"
-                     resource-ref="true"
-                     proxy-interface="javax.jms.Destination"/>-->
 
     <bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate">
         <property name="connectionFactory" ref="jmsConnectionFactory"/>

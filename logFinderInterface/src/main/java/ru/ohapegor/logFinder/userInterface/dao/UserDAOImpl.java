@@ -11,14 +11,15 @@ import ru.ohapegor.logFinder.userInterface.entities.persistent.User;
 
 import java.util.List;
 
-@Repository
+//using hibernate
+@Repository("userDao1")
 public class UserDAOImpl implements UserDAO {
 
     private static final Logger logger = LogManager.getLogger();
 
     private SessionFactory sessionFactory;
 
-    @Autowired
+    //@Autowired
     public void setSessionFactory(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
@@ -37,7 +38,7 @@ public class UserDAOImpl implements UserDAO {
     public User getUserByName(String username) {
         logger.info("Entering UserDAOImpl.getUserByName()");
         Session session = sessionFactory.getCurrentSession();
-        User user = session.get(User.class, username);
+        User user = (User) session.get(User.class, username);
         logger.info("UserDAO.getUserByName() finished, User - " + username + " successfully loaded from DB");
         return user;
     }

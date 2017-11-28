@@ -46,21 +46,17 @@
                     <h:outputText value="#{user.groups}"/>
                 </h:column>
                 <h:column>
-                    <f:facet name="header">isBanned</f:facet>
-                    <h:outputText value="#{user.banned}"/>
-                </h:column>
-                <h:column>
                     <f:facet name="header">Description</f:facet>
                     <pr:inplace id="ajax" editor="true">
                         <pr:inputText value="#{user.description}" required="true" label="text" />
                     </pr:inplace>
                 </h:column>
                 <h:column>
-                    <h:commandButton style="width: 120px" rendered="#{user.banned}" action="#{userBean.unBan(user)}" value="Разбанить"/>
-                    <h:commandButton style="width: 120px" rendered="#{not user.banned}" action="#{userBean.ban(user)}"  value="Забанить"/>
+                    <h:commandButton style="width: 120px" rendered="#{userBean.isBanned(user)}" action="#{userBean.unBan(user)}" value="Разбанить"/>
+                    <h:commandButton style="width: 120px" rendered="#{not userBean.isBanned(user) and not userBean.isAdmin(user)}" action="#{userBean.ban(user)}"  value="Забанить"/>
                 </h:column>
                 <h:column>
-                    <h:commandButton style="width: 120px" action="#{userBean.deleteUser(user)}" onclick="return confirmDelete()" value="Delete"/>
+                    <h:commandButton style="width: 120px" rendered="#{not userBean.isAdmin(user)}" action="#{userBean.deleteUser(user)}" onclick="return confirmDelete()" value="Delete"/>
                 </h:column>
                 <h:column>
                     <f:facet name="header">User Email</f:facet>
@@ -71,7 +67,7 @@
                     <h:inputText value="#{user.messageToSend}"  p:placeholder="enter mail to send"/>
                 </h:column>
                 <h:column>
-                    <h:commandButton style="width: 120px" value="Send Email" action="#{userBean.sendMessage(user)}"/>
+                    <h:commandButton style="width: 120px" value="Send Email" action="#{userBean.sendMessageTo(user)}"/>
                 </h:column>
             </h:dataTable>
             <h:column>

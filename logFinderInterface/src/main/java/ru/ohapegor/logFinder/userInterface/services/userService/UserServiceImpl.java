@@ -4,6 +4,7 @@ package ru.ohapegor.logFinder.userInterface.services.userService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.ohapegor.logFinder.userInterface.entities.persistent.User;
 import ru.ohapegor.logFinder.userInterface.dao.UserDAO;
@@ -18,6 +19,7 @@ public class UserServiceImpl implements UserService {
     private UserDAO userDAO;
 
     @Autowired
+    @Qualifier("userDao2")
     public void setUserDAO(UserDAO userDAO) {
         this.userDAO = userDAO;
     }
@@ -28,9 +30,6 @@ public class UserServiceImpl implements UserService {
     public User getUserByName(String userName) {
         logger.info("Entering UserServiceImpl.getUserByName()");
         User user = userDAO.getUserByName(userName);
-        if (user != null && user.getGroups().stream().anyMatch(group -> group.getGroupName().equalsIgnoreCase("BannedUsers"))){
-            user.setBanned(true);
-        }
         logger.info("Exiting UserServiceImpl.getUserByName()");
         return user;
     }
@@ -46,13 +45,6 @@ public class UserServiceImpl implements UserService {
     public List<User> getAllUsers() {
         logger.info("Entering UserServiceImpl.getUserByName()");
         List <User> userList = userDAO.getAllUsers();
-        userList.forEach(user -> {
-            if (user.getGroups().stream().anyMatch(group -> group.getGroupName().equalsIgnoreCase("BannedUsers"))) {
-                user.setBanned(true);
-            } else {
-                user.setBanned(false);
-            }
-        });
         logger.info("Exiting UserServiceImpl.getUserByName()");
         return userList;
     }
