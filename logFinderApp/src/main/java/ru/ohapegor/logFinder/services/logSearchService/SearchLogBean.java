@@ -39,7 +39,7 @@ public class SearchLogBean implements SearchLogService {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         Future<SearchInfoResult> future = executor.submit(() -> {
             List<ResultLogs> logs = getResultLogs(searchInfo);
-            Objects.requireNonNull(logs, "SearchLogService.getResultLogs() should not to return null!");
+            Objects.requireNonNull(logs, "SearchLogService.getResultLogs() should not return null!");
             SearchInfoResult result = SearchInfoResult.of(searchInfo, logs);
             result.setEmptyResultMessage(logs.isEmpty() ? "No logs Found" : null);
             return result;
@@ -53,6 +53,7 @@ public class SearchLogBean implements SearchLogService {
             logger.error("Exception in SearchLogBean.logSearch() : " + getStackTrace(e));
             throw new RuntimeException(e);
         } catch (TimeoutException e) {
+            future.cancel(true);
             logger.error("Reached execution timeout, exiting SearchLogBean.logSearch()");
             throw new TooLongExecutionException();
         }
