@@ -111,6 +111,53 @@ public class SearchInfoResult {
         return new SearchInfoResult(searchInfo,resultLogs);
     }
 
+    public static SearchInfoResult ofError(long errorCode, String errorMessage){
+        SearchInfoResult searchInfoResult =  new SearchInfoResult();
+        searchInfoResult.setErrorCode(errorCode);
+        searchInfoResult.setErrorMessage(errorMessage);
+        return searchInfoResult;
+    }
+
+    public static SearchInfoResult ofError(SearchInfo searchInfo, String errorMessage){
+        SearchInfoResult searchInfoResult =  new SearchInfoResult(new SearchInfo());
+        searchInfoResult.setErrorCode(-1);
+        searchInfoResult.setErrorMessage(errorMessage);
+        searchInfoResult.setEmptyResultMessage("Exception occurred : "+errorMessage);
+        return searchInfoResult;
+    }
+
+    public static SearchInfoResult ofError(String errorMessage){
+        SearchInfoResult searchInfoResult =  new SearchInfoResult();
+        searchInfoResult.setErrorCode(-1);
+        searchInfoResult.setErrorMessage(errorMessage);
+        searchInfoResult.setEmptyResultMessage("Exception occurred : "+errorMessage);
+        return searchInfoResult;
+    }
+
+    public static SearchInfoResult ofUnknownResponse(){
+        SearchInfoResult searchInfoResult =  new SearchInfoResult();
+        searchInfoResult.setErrorCode(-1);
+        searchInfoResult.setErrorMessage("Unknown response");
+        return searchInfoResult;
+    }
+
+    public static SearchInfoResult ofTimeout(SearchInfo searchInfo){
+        SearchInfoResult searchInfoResult =  new SearchInfoResult(new SearchInfo());
+        searchInfoResult.getSearchInfo().setFileExtension(searchInfo.getFileExtension());
+        searchInfoResult.getSearchInfo().setFileExtension(searchInfo.getFileExtension());
+        searchInfoResult.setErrorMessage("Execution timeout reached");
+        searchInfoResult.setEmptyResultMessage("Execution timeout reached");
+        return searchInfoResult;
+    }
+
+    public static SearchInfoResult ofGeneratedFile(String filePath){
+        SearchInfoResult searchInfoResult = new SearchInfoResult();
+        searchInfoResult.setFilePath(filePath);
+        return searchInfoResult;
+    }
+
+
+
 
     @Override
     public String toString() {

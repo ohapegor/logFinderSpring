@@ -5,6 +5,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -18,6 +19,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.util.*;
+import java.util.concurrent.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -33,11 +35,26 @@ public class SearchLogBean implements SearchLogService {
 
     @Override
     public SearchInfoResult logSearch(SearchInfo searchInfo) {
-        logger.info("Entering SearchLogBean.logSearch(SearchInfo searchInfo)");
-        List<ResultLogs> logs = getResultLogs(searchInfo);
-        SearchInfoResult result = SearchInfoResult.of(searchInfo,logs);
-        if (logs == null || logs.isEmpty()) {
-            result.setEmptyResultMessage("No logs found");
+        logger.info("Entering SearchLogBean.logSearch()");
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        Future<SearchInfoResult> future = executor.submit(() -> {
+            List<ResultLogs> logs = getResultLogs(searchInfo);
+            Objects.requireNonNull(logs, "SearchLogService.getResultLogs() should not to return null!");
+            SearchInfoResult result = SearchInfoResult.of(searchInfo, logs);
+            result.setEmptyResultMessage(logs.isEmpty() ? "No logs Found" : null);
+            return result;
+        });
+        SearchInfoResult result = null;
+        try {
+            result = searchInfo.getRealization() ?
+                    future.get(30, TimeUnit.SECONDS) :
+                    future.get(10, TimeUnit.SECONDS);
+        } catch (InterruptedException | ExecutionException e) {
+            logger.error("Exception in SearchLogBean.logSearch() : " + getStackTrace(e));
+            throw new RuntimeException(e);
+        } catch (TimeoutException e) {
+            logger.error("Reached execution timeout, exiting SearchLogBean.logSearch()");
+            throw new TooLongExecutionException();
         }
         logger.info("Exiting SearchLogBean.logSearch()");
         return result;
@@ -131,7 +148,7 @@ public class SearchLogBean implements SearchLogService {
             }
         }
 
-        logger.info("Exiting SearchLogBean.findServerNamesInLocation(), searching Logs in servers : "+result);
+        logger.info("Exiting SearchLogBean.findServerNamesInLocation(), searching Logs in servers : " + result);
         return result;
     }
 
@@ -157,15 +174,15 @@ public class SearchLogBean implements SearchLogService {
                 for (int j = 0; j < nodesInServer.getLength(); j++) {
                     Node n = nodesInServer.item(j);
                     //<name>
-                    if ("name".equals(n.getNodeName())){
+                    if ("name".equals(n.getNodeName())) {
                         serverName = n.getTextContent();
-                     //<cluster>
-                    } else if ("cluster".equals(n.getNodeName())){
+                        //<cluster>
+                    } else if ("cluster".equals(n.getNodeName())) {
                         clusterName = n.getTextContent();
                     }
                 }
                 //add server to result
-                if (serverName!=null)serverNames.put(serverName,clusterName);
+                if (serverName != null) serverNames.put(serverName, clusterName);
             }
         } catch (Exception e) {
             logger.error("Exception in SearchLogBean.getAllServerNamesWithCluster():" + getStackTrace(e));
@@ -178,7 +195,6 @@ public class SearchLogBean implements SearchLogService {
 
     private List<ResultLogs> getResultLogs(SearchInfo searchInfo) {
         logger.info("Entering SearchLogBean.getResultLogs()");
-
         List<ResultLogs> resultLogsList = new ArrayList<>();
         Set<ResultLogs> resultLogsSet = new HashSet<>();
         Set<String> serverNames = findServerNamesInLocation(searchInfo.getLocation());
@@ -240,7 +256,7 @@ public class SearchLogBean implements SearchLogService {
                             }
 
                             //6.add log in set
-                            resultLogsSet.add(ResultLogs.of(file.getName(),timeMoment,message.toString()));
+                            resultLogsSet.add(ResultLogs.of(file.getName(), timeMoment, message.toString()));
                         }
                         //close reader
                     }
@@ -249,13 +265,12 @@ public class SearchLogBean implements SearchLogService {
             //8.sort by time moment
             resultLogsList.addAll(resultLogsSet);
             resultLogsList.sort(Comparator.comparing(ResultLogs::getTimeMoment));
-            logger.info("Exiting SearchLogBean.getResultLogs(). Logs count - " + resultLogsList.size());
 
         } catch (Exception e) {
             logger.error("Exception in SearchLogBean.getResultLogs() : " + getStackTrace(e));
-            logger.info(" Exiting SearchLogBean.getResultLogs()");
             throw new RuntimeException("Exception while parsing Logs", e);
         }
+        logger.info(" Exiting SearchLogBean.getResultLogs(); Logs count - " + resultLogsList.size());
         return resultLogsList;
     }
 
@@ -271,8 +286,8 @@ public class SearchLogBean implements SearchLogService {
     }
 
     private boolean isInValidTimeInterval(Calendar timeMoment, SearchInfo searchInfo) {
-        return searchInfo.getDateIntervals().stream().anyMatch(interval->
-                        !timeMoment.before(interval.getDateFrom()) &&
+        return searchInfo.getDateIntervals().stream().anyMatch(interval ->
+                !timeMoment.before(interval.getDateFrom()) &&
                         !timeMoment.after(interval.getDateTo()));
     }
 

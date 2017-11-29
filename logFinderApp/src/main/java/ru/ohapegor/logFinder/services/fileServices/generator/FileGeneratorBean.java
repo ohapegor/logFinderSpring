@@ -1,8 +1,6 @@
 package ru.ohapegor.logFinder.services.fileServices.generator;
 
 
-import com.itextpdf.text.*;
-import com.itextpdf.text.pdf.*;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.fop.apps.Fop;
 import org.apache.fop.apps.FopFactory;
@@ -10,8 +8,9 @@ import org.apache.fop.apps.MimeConstants;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Scope;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 import ru.ohapegor.logFinder.config.Config;
 import ru.ohapegor.logFinder.entities.*;
@@ -19,6 +18,7 @@ import ru.ohapegor.logFinder.services.fileServices.generator.util.ZipFileManager
 import ru.ohapegor.logFinder.services.fileServices.reader.FileReaderService;
 import ru.ohapegor.logFinder.services.logSearchService.SearchLogService;
 
+import javax.inject.Inject;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.util.JAXBSource;
 import javax.xml.transform.Templates;
@@ -29,6 +29,7 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
 import net.sf.saxon.TransformerFactoryImpl;
+import ru.ohapegor.logFinder.services.logSearchService.TooLongExecutionException;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -164,7 +165,16 @@ public class FileGeneratorBean implements FileGeneratorService {
     @Override
     public void fileGenerate(SearchInfo searchInfo) {
         logger.info("Entering FileGeneratorBean.fileGenerate() " + searchInfo);
-        SearchInfoResult searchInfoResult = searchLogService.logSearch(searchInfo);
+        SearchInfoResult searchInfoResult;
+        try {
+             searchInfoResult = searchLogService.logSearch(searchInfo);
+        }catch (TooLongExecutionException e){
+            logger.info("Reached timeout while searching logs");
+            searchInfoResult = SearchInfoResult.ofTimeout(searchInfo);
+        }catch (Exception e){
+            logger.info("Exception while searching logs");
+            searchInfoResult = SearchInfoResult.ofError(searchInfo,getStackTrace(e));
+        }
         writeLogsToFile(searchInfoResult, getXsltPath(searchInfo.getFileExtension()));
         logger.info("Exiting FileGeneratorBean.fileGenerate() " + searchInfo);
     }
@@ -174,7 +184,14 @@ public class FileGeneratorBean implements FileGeneratorService {
     }
 
     private void writeLogsToFile(SearchInfoResult searchInfoResult, String xsltPath) {
-        logger.info("Entering FileGeneratorBean.writeLogsToFile(SearchInfoResult searchInfoResult");
+        logger.info("Entering FileGeneratorBean.writeLogsToFile(); "+searchInfoResult+"; xsltPath = "+xsltPath);
+        Objects.requireNonNull(searchInfoResult.getSearchInfo().getFileExtension(),"File extension is null");
+        Objects.requireNonNull(xsltPath,"xsltPath is null");
+        File xslt = new File(xsltPath);
+        if (!xslt.exists()){
+            throw new RuntimeException("xslt not found!");
+        }
+
         try {
             Path filesDirectory = Paths.get(uniqueFilePath).getParent();
             if (Files.notExists(filesDirectory)) {
@@ -183,12 +200,12 @@ public class FileGeneratorBean implements FileGeneratorService {
 
             if (searchInfoResult.getSearchInfo().getFileExtension().equalsIgnoreCase("pdf")) {
                 //writeLogsToPdfFile(searchInfoResult);
-                writeLogsToPdfFileWithFO(searchInfoResult, xsltPath);
+                writeLogsToPdfFileWithFO(searchInfoResult, xslt);
                 return;
             }
 
             TransformerFactory tf = TransformerFactoryImpl.newInstance();
-            StreamSource xsltStylesheet = new StreamSource(new File(xsltPath));
+            StreamSource xsltStylesheet = new StreamSource(xslt);
             Transformer transformer = tf.newTransformer(xsltStylesheet);
 
             // Source
@@ -207,6 +224,7 @@ public class FileGeneratorBean implements FileGeneratorService {
             }
         } catch (Exception e) {
             logger.info("Exception in FileGeneratorBean.writeLogsToFile() e=" + getStackTrace(e));
+            throw new RuntimeException(e);
         }
         logger.info("Exiting FileGeneratorBean.writeLogsToFile()");
     }
@@ -214,12 +232,14 @@ public class FileGeneratorBean implements FileGeneratorService {
 
     private void createDocx() throws Exception {
         logger.info("Entering FileGeneratorBean.createDocx()");
-        Path zipTemplate = Paths.get(Config.getString("DOCX_TEMLATE_LOCATION"));
-        Path zipFile = Paths.get("g:/searchLogResults/myDocx.zip");
-        if (Files.exists(zipFile)) Files.delete(zipFile);
+        Path zipTemplate = Paths.get(Config.getString("DOCX_TEMPLATE_LOCATION"));
+        Path zipFile = Paths.get(Config.getString("GENERATED_FILE_LOCATION")+"myDocx.zip");
+        if (Files.exists(zipFile)) {
+            Files.delete(zipFile);
+        }
         Files.copy(zipTemplate, zipFile);
         ZipFileManager zipFileManager = new ZipFileManager(zipFile);
-        Path docXML = Paths.get("G:/searchLogResults/document.xml");
+        Path docXML = Paths.get(Config.getString("GENERATED_FILE_LOCATION")+"document.xml");
         Files.copy(Paths.get(uniqueFilePath), docXML, StandardCopyOption.REPLACE_EXISTING);
         zipFileManager.addFile(docXML);
         Files.delete(docXML);
@@ -328,19 +348,24 @@ public class FileGeneratorBean implements FileGeneratorService {
     }
 
     */
-    private void writeLogsToPdfFileWithFO(SearchInfoResult searchInfoResult, String xsltPath) {
+
+    private void writeLogsToPdfFileWithFO(SearchInfoResult searchInfoResult, File xslt) {
         logger.info("Entering FileGenerationBean.writeLogsToPdfFileWithFO()");
         try {
-            // FopFactory fopFactory = FopFactory.newInstance(new File(Thread.currentThread().getContextClassLoader().getResource("fopConfig.xml").getFile()));
-            FopFactory fopFactory = FopFactory.newInstance(new File("G:\\Egor\\Work\\Projects\\LogReader\\logFinder\\logFinderApp\\src\\main\\resources\\fopConfig.xml"));
+
+            File fopConfig = new File(Thread.currentThread().getContextClassLoader().
+                    getResource("fopConfig.xml").getFile());
+            if (!fopConfig.exists()){
+                fopConfig = new File("G:\\Egor\\git\\EO-Test-Spring\\logFinderApp\\src\\main\\resources\\fopConfig.xml");
+            }
+            FopFactory fopFactory = FopFactory.newInstance(fopConfig);
             TransformerFactory tFactory = TransformerFactory.newInstance();
             Templates templates = tFactory.newTemplates(
-                    new StreamSource(new File(xsltPath)));
+                    new StreamSource(xslt));
 
             try (BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(uniqueFilePath))) {
                 Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, out);
                 Transformer transformer = templates.newTransformer();
-                // Source
                 JAXBContext jc = JAXBContext.newInstance(SearchInfoResult.class);
                 JAXBSource source = new JAXBSource(jc, searchInfoResult);
 
@@ -351,19 +376,5 @@ public class FileGeneratorBean implements FileGeneratorService {
         }
         logger.info("Exiting FileGenerationBean.writeLogsToPdfFileWithFO()");
     }
-
-    /*public static void main(String[] args) {
-        SearchInfo searchInfo = SearchInfo.of("","",null,FileExtension.RTF);
-        File generatedLogsDirectory = new File(Config.getString("GENERATED_FILE_LOCATION"));
-        File[] storedFiles = generatedLogsDirectory.listFiles();
-        Arrays.sort(storedFiles, new Comparator<File>() {
-            @Override
-            public int compare(File f1, File f2) {
-                return f2.getName().endsWith(searchInfo.getFileExtension())?1:-1;
-            }
-        });
-        for (int i = 0; i < storedFiles.length; i++) {
-            System.out.println(storedFiles[i]);
-        }*/
 
 }

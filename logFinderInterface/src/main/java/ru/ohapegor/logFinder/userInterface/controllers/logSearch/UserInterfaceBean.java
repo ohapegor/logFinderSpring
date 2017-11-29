@@ -32,7 +32,7 @@ public class UserInterfaceBean implements Serializable {
 
     @Autowired
     // @Qualifier("soapClientSpring")
-     @Qualifier("restClientSpring1")
+     @Qualifier("restClientSpring")
     public void setSearchLogClient(SearchLogClient searchLogClient) {
         this.searchLogClient = searchLogClient;
     }
@@ -227,12 +227,9 @@ public class UserInterfaceBean implements Serializable {
             }
 
         } catch (InvalidSearchInfoException e) {
-            result = new SearchInfoResult();
-            result.setErrorMessage(e.getErrorMessage());
-            result.setErrorCode(e.getErrorCode());
+            result = SearchInfoResult.ofError(e.getErrorCode(),e.getErrorMessage());
         } catch (Exception e) {
-            result = new SearchInfoResult();
-            result.setErrorMessage(getStackTrace(e));
+            result = SearchInfoResult.ofError(getStackTrace(e));
             logger.error("Exception in  UserInterfaceBean.logSearch(): " + getStackTrace(e));
         }
         logger.info("Exiting UserInterfaceBean.logSearch()");

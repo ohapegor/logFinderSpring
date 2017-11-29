@@ -15,6 +15,8 @@ import javax.naming.NamingException;
 
 import commonj.work.WorkManager;
 
+import java.util.Date;
+
 import static org.apache.commons.lang.exception.ExceptionUtils.getStackTrace;
 
 public abstract class AbstractWebService /*implements ApplicationContextAware*/ {
@@ -76,14 +78,16 @@ public abstract class AbstractWebService /*implements ApplicationContextAware*/ 
 
     protected SearchInfoResult logSearchBL(SearchInfo searchInfo) {
         logger.info("Entering  " + this.getClass().getSimpleName() + ".logSearchBL(SearchInfo searchInfo)");
-
         //throws InvalidSearchInfoException
         searchLogService.correctionCheck(searchInfo);
 
         SearchInfoResult searchInfoResult = null;
         //synchronous
         if (!searchInfo.getRealization()) {
+            long start = new Date().getTime();
             searchInfoResult = searchLogService.logSearch(searchInfo);
+            long end = new Date().getTime();
+            searchInfoResult.setErrorMessage(searchInfoResult.getErrorMessage()+". Execution time = "+(end-start)+" ms");
         }
 
         //asynchronous
@@ -116,11 +120,10 @@ public abstract class AbstractWebService /*implements ApplicationContextAware*/ 
                 }
             }
             //set file path in result
-            searchInfoResult = new SearchInfoResult();
+            searchInfoResult = SearchInfoResult.ofGeneratedFile(fileGeneratorService.getUniqueFilePath());
             searchInfoResult.setFilePath(fileGeneratorService.getUniqueFilePath());
         }
-
-        logger.info("Exiting " + this.getClass().getSimpleName() + ".logSearchBL(SearchInfo searchInfo)");
+        logger.info("Exiting  " + this.getClass().getSimpleName());
         return searchInfoResult;
     }
 

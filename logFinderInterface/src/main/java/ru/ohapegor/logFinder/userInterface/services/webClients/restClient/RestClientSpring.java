@@ -4,10 +4,7 @@ package ru.ohapegor.logFinder.userInterface.services.webClients.restClient;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.context.annotation.Scope;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import ru.ohapegor.logFinder.config.Config;
@@ -41,17 +38,23 @@ public class RestClientSpring implements SearchLogClient {
             HttpEntity<SearchInfo> entity = new HttpEntity<>(searchInfo, httpHeaders);
             ResponseEntity<SearchInfoResult> responseEntity =
                     restTemplate.postForEntity(ENDPOINT, entity, SearchInfoResult.class);
-            if (responseEntity.getHeaders().get("errorCode") != null) {
-                searchInfoResult = new SearchInfoResult();
-                searchInfoResult.setErrorMessage(String.valueOf(responseEntity.getHeaders().get("errorMessage")).replaceAll("\\[|]", ""));
-                searchInfoResult.setErrorCode(Long.parseLong(String.valueOf(responseEntity.getHeaders().get("errorCode")).replaceAll("\\[|]", "")));
-            } else {
-                searchInfoResult = responseEntity.getBody();
+            switch (responseEntity.getStatusCode()) {
+                case OK:
+                    searchInfoResult = responseEntity.getBody();
+                    break;
+                case NO_CONTENT:
+                    String errorCode = String.valueOf(responseEntity.getHeaders().get("errorCode")).replaceAll("\\[|]", "");
+                    String errorMessage = String.valueOf(responseEntity.getHeaders().get("errorMessage")).replaceAll("\\[|]", "");
+                    searchInfoResult = SearchInfoResult.ofError(Long.parseLong(errorCode), errorMessage);
+                    break;
+                default:
+                    searchInfoResult = SearchInfoResult.ofUnknownResponse();
             }
+
         } catch (Exception e) {
             logger.info("Exception in RestClient.logSearch(): " + getStackTrace(e));
         }
-        logger.info("Exiting RestClient.logSearch(SearchInfo searchInfo)");
+        logger.info("Exiting RestClient.logSearch()");
         return searchInfoResult;
     }
 

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.ohapegor.logFinder.entities.InvalidSearchInfoException;
 import ru.ohapegor.logFinder.entities.SearchInfo;
 import ru.ohapegor.logFinder.entities.SearchInfoResult;
+import ru.ohapegor.logFinder.services.logSearchService.TooLongExecutionException;
 import ru.ohapegor.logFinder.services.webServices.AbstractWebService;
 
 import javax.servlet.http.HttpServletResponse;
@@ -40,43 +41,25 @@ public class SearchLogREST extends AbstractWebService {
 
             response = new ResponseEntity<>(searchInfoResult, HttpStatus.OK);
         } catch (InvalidSearchInfoException e) {
-            logger.info("Incorrect searchInfo : "+ e.getCorrectionCheckResult()+" Exiting SearchLogREST.logSearch()");
+            logger.info("Incorrect searchInfo : " + e.getCorrectionCheckResult() + " Exiting SearchLogREST.logSearch()");
             HttpHeaders headers = new HttpHeaders();
             headers.set("errorCode", "" + e.getErrorCode());
             headers.set("errorMessage", "" + e.getErrorMessage());
             response = new ResponseEntity<>(searchInfoResult, headers, HttpStatus.NO_CONTENT);
+        }catch (TooLongExecutionException e){
+            logger.info("Execution timeout reached");
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("errorCode", "" + 204);
+            headers.set("errorMessage", "Execution timeout reached");
+            response = new ResponseEntity<>(searchInfoResult, headers, HttpStatus.NO_CONTENT);
         } catch (Exception e) {
             logger.error("Exception in SearchLogREST.logSearch(): " + getStackTrace(e));
             HttpHeaders headers = new HttpHeaders();
-            headers.set("unknown error", ExceptionUtils.getFullStackTrace(e));
+            headers.set("errorMessage", getStackTrace(e).replaceAll("\n",""));
             response = new ResponseEntity<>(searchInfoResult, headers,HttpStatus.INTERNAL_SERVER_ERROR);
         }
         logger.info("Exiting SearchLogREST.logSearch()");
         return response;
     }
 
-    @RequestMapping(value = "/logSearch1", method = RequestMethod.POST,
-            consumes = {"application/xml", "application/json"},
-            produces = {"application/xml", "application/json"})
-    @ResponseBody
-    public SearchInfoResult logSearch(@RequestBody SearchInfo searchInfo, HttpServletResponse response) {
-        logger.info("Entering SearchLogREST.logSearch(SearchInfo " + searchInfo + ")");
-        SearchInfoResult searchInfoResult = null;
-        try {
-
-            //invoke business method
-            searchInfoResult = logSearchBL(searchInfo);
-
-        } catch (InvalidSearchInfoException e) {
-            logger.info("Incorrect searchInfo : " + e.getCorrectionCheckResult() + " Exiting SearchLogREST.logSearch()");
-            searchInfoResult = new SearchInfoResult(e.getCorrectionCheckResult());
-            response.setHeader("errorMessage",getStackTrace(e));
-        } catch (Exception e) {
-            logger.error("Exception in SearchLogREST.logSearch(): " + getStackTrace(e) + "; exiting  SearchLogREST.logSearch()");
-            response.setHeader("error", getStackTrace(e));
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-        }
-        logger.info("Exiting SearchLogREST.logSearch()");
-        return searchInfoResult;
-    }
 }
