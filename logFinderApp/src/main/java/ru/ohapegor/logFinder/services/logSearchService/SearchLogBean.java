@@ -53,8 +53,8 @@ public class SearchLogBean implements SearchLogService {
             logger.error("Exception in SearchLogBean.logSearch() : " + getStackTrace(e));
             throw new RuntimeException(e);
         } catch (TimeoutException e) {
-            future.cancel(true);
-            logger.error("Reached execution timeout, exiting SearchLogBean.logSearch()");
+            logger.error("Reached execution timeout, exiting SearchLogBean.logSearch();" +
+                    " cancel allowed = "+future.cancel(true));
             throw new TooLongExecutionException();
         }
         logger.info("Exiting SearchLogBean.logSearch()");
@@ -221,6 +221,10 @@ public class SearchLogBean implements SearchLogService {
 
                 //0.start parsing log file
                 for (File file : logFiles) {
+                    if (Thread.currentThread().isInterrupted()){
+                        logger.info("Execution of SearchLogBean.getResultLogs() is interrupted");
+                        return null;
+                    }
                     logger.info("Searching logs in file : " + file.getName());
                     try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
                         //Create instances of ResultLogs
