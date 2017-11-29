@@ -19,9 +19,7 @@ import static org.apache.commons.lang.exception.ExceptionUtils.getStackTrace;
 
 @Service("soapClientSpring")
 public class SoapClientSpring extends WebServiceGatewaySupport implements SearchLogClient {
-
-
-
+    
     @Override
     public SearchInfoResult logSearch(SearchInfo searchInfo) {
         logger.info("Entering SoapClientSpring.logSearch()");
@@ -51,10 +49,5 @@ public class SoapClientSpring extends WebServiceGatewaySupport implements Search
         logger.info("Exiting SoapClientSpring.logSearch()");
         return searchInfoResult;
     }
-/*
-    public static void main(String[] args) {
 
-        SearchInfoResult searchInfoResult = new SoapClientSpring().logSearch(new SearchInfo());
-        System.out.println("searchInfoResult = " + searchInfoResult);
-    }*/
 }

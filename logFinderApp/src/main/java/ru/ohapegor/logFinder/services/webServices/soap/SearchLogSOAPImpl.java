@@ -1,7 +1,6 @@
 package ru.ohapegor.logFinder.services.webServices.soap;
 
 
-
 import org.springframework.context.annotation.Scope;
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
@@ -33,11 +32,12 @@ public class SearchLogSOAPImpl extends AbstractWebService {
             searchInfoResult = logSearchBL(logSearchRequest.getSearchInfo());
 
 
-        }catch (InvalidSearchInfoException e) {
-            logger.info("Incorrect searchInfo : "+ e.getCorrectionCheckResult()+" Exiting SearchLogSOAP.logSearch()");
-            searchInfoResult = new SearchInfoResult(e.getCorrectionCheckResult());
-        }catch (Exception e){
-                logger.error("Exception in SearchLogSOAPImpl.logSearch(): "+ getStackTrace(e));
+        } catch (InvalidSearchInfoException e) {
+            logger.info("Incorrect searchInfo : " + e.getCorrectionCheckResult() + " Exiting SearchLogSOAP.logSearch()");
+            searchInfoResult = SearchInfoResult.ofError(e.getErrorCode(), e.getErrorMessage());
+        } catch (Exception e) {
+            searchInfoResult = SearchInfoResult.ofError(getStackTrace(e));
+            logger.error("Exception in SearchLogSOAPImpl.logSearch(): " + getStackTrace(e));
         }
         logger.info("Exiting SearchLogSOAPImpl.logSearch()");
         return new LogSearchResponse(searchInfoResult);
