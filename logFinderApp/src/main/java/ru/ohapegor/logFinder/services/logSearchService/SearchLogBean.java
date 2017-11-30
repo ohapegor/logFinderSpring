@@ -52,7 +52,7 @@ public class SearchLogBean implements SearchLogService {
         } catch (TimeoutException e) {
             logger.error("Reached execution timeout, exiting SearchLogBean.logSearch();" +
                     " cancel allowed = "+future.cancel(true));
-            throw new TooLongExecutionException();
+            throw new TooLongExecutionException("Searching log exceeded allowed time interval");
         }
         logger.info("Exiting SearchLogBean.logSearch()");
         return result;
@@ -220,7 +220,7 @@ public class SearchLogBean implements SearchLogService {
                 for (File file : logFiles) {
                     if (Thread.currentThread().isInterrupted()){
                         logger.info("Execution of SearchLogBean.getResultLogs() is interrupted");
-                        throw new TooLongExecutionException();
+                        throw new InterruptedException();
                     }
                     logger.info("Searching logs in file : " + file.getName());
                     try (BufferedReader reader = new BufferedReader(new FileReader(file))) {

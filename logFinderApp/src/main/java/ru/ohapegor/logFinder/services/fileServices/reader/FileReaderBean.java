@@ -29,10 +29,7 @@ import javax.xml.validation.SchemaFactory;
 import java.io.*;
 import java.nio.file.Files;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 import static org.apache.commons.lang.exception.ExceptionUtils.getStackTrace;
 import static ru.ohapegor.logFinder.entities.FileExtension.*;
@@ -74,8 +71,9 @@ public class FileReaderBean implements FileReaderService {
                     logger.info("Unknown file extension = " + extension);
                 }
             }
-            if (searchInfoResult == null || searchInfoResult.getResultLogs() == null || searchInfoResult.getResultLogs().isEmpty()) {
-                searchInfoResult.setEmptyResultMessage("No logs found!");
+            searchInfoResult = Optional.of(searchInfoResult).orElse(SearchInfoResult.ofEmptyResult());
+            if (searchInfoResult.getResultLogs() == null || searchInfoResult.getResultLogs().isEmpty()) {
+                searchInfoResult.setEmptyResultMessage("No Logs Found");
             }
         } catch (Exception e) {
             logger.error("Exception in  FileReaderBean.readInfoFromFile(File " + file.getName() + ") e = " + getStackTrace(e));

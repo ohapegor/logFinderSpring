@@ -9,8 +9,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 import ru.ohapegor.logFinder.config.Config;
 import ru.ohapegor.logFinder.entities.*;
@@ -18,7 +16,6 @@ import ru.ohapegor.logFinder.services.fileServices.generator.util.ZipFileManager
 import ru.ohapegor.logFinder.services.fileServices.reader.FileReaderService;
 import ru.ohapegor.logFinder.services.logSearchService.SearchLogService;
 
-import javax.inject.Inject;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.util.JAXBSource;
 import javax.xml.transform.Templates;
@@ -38,6 +35,10 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.*;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import static org.apache.commons.lang.exception.ExceptionUtils.getStackTrace;
 
@@ -116,8 +117,8 @@ public class FileGeneratorBean implements FileGeneratorService {
         Objects.requireNonNull(storedIntervals, "received null storedIntervals in FileGeneratorBean.isValidIntervals()");
         Objects.requireNonNull(searchIntervals, "received null searchIntervals in FileGeneratorBean.isValidIntervals()");
         return
-        storedIntervals.stream().allMatch(stored -> searchIntervals.stream().anyMatch(search -> isIntervalValid(stored, search)))
-                && searchIntervals.stream().allMatch(search -> storedIntervals.stream().anyMatch(stored -> isIntervalValid(stored, search)));
+                storedIntervals.stream().allMatch(stored -> searchIntervals.stream().anyMatch(search -> isIntervalValid(stored, search)))
+                        && searchIntervals.stream().allMatch(search -> storedIntervals.stream().anyMatch(stored -> isIntervalValid(stored, search)));
 
     }
 
@@ -167,13 +168,13 @@ public class FileGeneratorBean implements FileGeneratorService {
         logger.info("Entering FileGeneratorBean.fileGenerate() " + searchInfo);
         SearchInfoResult searchInfoResult;
         try {
-             searchInfoResult = searchLogService.logSearch(searchInfo);
-        }catch (TooLongExecutionException e){
+            searchInfoResult = searchLogService.logSearch(searchInfo);
+        } catch (TooLongExecutionException e) {
             logger.info("Reached timeout while searching logs");
             searchInfoResult = SearchInfoResult.ofTimeout(searchInfo);
-        }catch (Exception e){
+        } catch (Exception e) {
             logger.info("Exception while searching logs");
-            searchInfoResult = SearchInfoResult.ofError(searchInfo,getStackTrace(e));
+            searchInfoResult = SearchInfoResult.ofError(searchInfo, getStackTrace(e));
         }
         writeLogsToFile(searchInfoResult, getXsltPath(searchInfo.getFileExtension()));
         logger.info("Exiting FileGeneratorBean.fileGenerate() " + searchInfo);
@@ -184,11 +185,11 @@ public class FileGeneratorBean implements FileGeneratorService {
     }
 
     private void writeLogsToFile(SearchInfoResult searchInfoResult, String xsltPath) {
-        logger.info("Entering FileGeneratorBean.writeLogsToFile(); "+searchInfoResult+"; xsltPath = "+xsltPath);
-        Objects.requireNonNull(searchInfoResult.getSearchInfo().getFileExtension(),"File extension is null");
-        Objects.requireNonNull(xsltPath,"xsltPath is null");
+        logger.info("Entering FileGeneratorBean.writeLogsToFile(); " + searchInfoResult + "; xsltPath = " + xsltPath);
+        Objects.requireNonNull(searchInfoResult.getSearchInfo().getFileExtension(), "File extension is null");
+        Objects.requireNonNull(xsltPath, "xsltPath is null");
         File xslt = new File(xsltPath);
-        if (!xslt.exists()){
+        if (!xslt.exists()) {
             throw new RuntimeException("xslt not found!");
         }
 
@@ -200,7 +201,11 @@ public class FileGeneratorBean implements FileGeneratorService {
 
             if (searchInfoResult.getSearchInfo().getFileExtension().equalsIgnoreCase("pdf")) {
                 //writeLogsToPdfFile(searchInfoResult);
-                writeLogsToPdfFileWithFO(searchInfoResult, xslt);
+                ExecutorService executor = Executors.newSingleThreadExecutor();
+                executor.submit(() -> writeLogsToPdfFileWithFO(searchInfoResult, xslt));
+                if (!executor.awaitTermination(3, TimeUnit.SECONDS)) {
+                   logger.info("Writing logs to pdf exceeded timeout, shutdown =" + executor.shutdownNow());
+                }
                 return;
             }
 
@@ -233,13 +238,13 @@ public class FileGeneratorBean implements FileGeneratorService {
     private void createDocx() throws Exception {
         logger.info("Entering FileGeneratorBean.createDocx()");
         Path zipTemplate = Paths.get(Config.getString("DOCX_TEMPLATE_LOCATION"));
-        Path zipFile = Paths.get(Config.getString("GENERATED_FILE_LOCATION")+"myDocx.zip");
+        Path zipFile = Paths.get(Config.getString("GENERATED_FILE_LOCATION") + "myDocx.zip");
         if (Files.exists(zipFile)) {
             Files.delete(zipFile);
         }
         Files.copy(zipTemplate, zipFile);
         ZipFileManager zipFileManager = new ZipFileManager(zipFile);
-        Path docXML = Paths.get(Config.getString("GENERATED_FILE_LOCATION")+"document.xml");
+        Path docXML = Paths.get(Config.getString("GENERATED_FILE_LOCATION") + "document.xml");
         Files.copy(Paths.get(uniqueFilePath), docXML, StandardCopyOption.REPLACE_EXISTING);
         zipFileManager.addFile(docXML);
         Files.delete(docXML);
@@ -355,7 +360,7 @@ public class FileGeneratorBean implements FileGeneratorService {
 
             File fopConfig = new File(Thread.currentThread().getContextClassLoader().
                     getResource("fopConfig.xml").getFile());
-            if (!fopConfig.exists()){
+            if (!fopConfig.exists()) {
                 fopConfig = new File("G:\\Egor\\git\\EO-Test-Spring\\logFinderApp\\src\\main\\resources\\fopConfig.xml");
             }
             FopFactory fopFactory = FopFactory.newInstance(fopConfig);

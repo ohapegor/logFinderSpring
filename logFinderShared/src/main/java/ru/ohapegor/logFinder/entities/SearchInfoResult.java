@@ -156,6 +156,12 @@ public class SearchInfoResult {
         return searchInfoResult;
     }
 
+    public static SearchInfoResult ofEmptyResult(){
+        SearchInfoResult searchInfoResult = new SearchInfoResult();
+        searchInfoResult.setEmptyResultMessage("No Logs Found");
+        return searchInfoResult;
+    }
+
 
 
 
