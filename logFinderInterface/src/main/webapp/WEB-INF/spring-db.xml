@@ -5,17 +5,16 @@
        xmlns:tx="http://www.springframework.org/schema/tx"
        xmlns:jpa="http://www.springframework.org/schema/data/jpa"
        xmlns:jee="http://www.springframework.org/schema/jee"
+       xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc.xsd
        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
        http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee.xsd
         http://www.springframework.org/schema/data/jpa
-        http://www.springframework.org/schema/data/jpa/spring-jpa.xsd"
+        http://www.springframework.org/schema/data/jpa/spring-jpa.xsd
+        http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd"
 >
-    <jdbc:initialize-database data-source="dataSource" enabled="false">
-        <jdbc:script location="classpath:db/initDB.sql"/>
-        <jdbc:script encoding="utf-8" location="classpath:db/populateDB.sql"/>
-    </jdbc:initialize-database>
 
     <!--<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
@@ -24,10 +23,12 @@
        <property name="password" value="root"/>
    </bean>-->
 
-    <jee:jndi-lookup id="dataSource"
-                     jndi-name="/jdbc/usersDS"
-                     lookup-on-startup="false"
-                     proxy-interface="javax.sql.DataSource"/>
+    <jdbc:initialize-database data-source="dataSource" enabled="true">
+        <jdbc:script location="classpath:db/initDB.sql"/>
+        <jdbc:script location="classpath:db/populateDB.sql"/>
+    </jdbc:initialize-database>
+
+
 
     <tx:annotation-driven transaction-manager="transactionManager"/>
 
@@ -78,5 +79,29 @@
     <jpa:repositories base-package="ru.ohapegor.logFinder.userInterface.dao.dataJPA"
                       entity-manager-factory-ref="entityManagerFactory"
                       transaction-manager-ref="transactionManager"/>
+
+    <bean id="dataSource"
+          class="org.springframework.jdbc.datasource.DriverManagerDataSource"
+          p:driverClassName="org.hsqldb.jdbcDriver"
+          p:url="${database.url}"
+          p:username="${database.username}"
+          p:password="${database.password}"/>
+
+    <beans profile="mysql">
+        <jee:jndi-lookup id="dataSource"
+                         jndi-name="/jdbc/usersDS"
+                         lookup-on-startup="false"
+                         proxy-interface="javax.sql.DataSource"/>
+    </beans>
+
+    <beans profile="hsqldb">
+        <context:property-placeholder location="classpath:hsqldb.properties" system-properties-mode="OVERRIDE"/>
+        <bean id="dataSource"
+              class="org.springframework.jdbc.datasource.DriverManagerDataSource"
+              p:driverClassName="org.hsqldb.jdbcDriver"
+              p:url="${database.url}"
+              p:username="${database.username}"
+              p:password="${database.password}"/>
+    </beans>
 
 </beans>

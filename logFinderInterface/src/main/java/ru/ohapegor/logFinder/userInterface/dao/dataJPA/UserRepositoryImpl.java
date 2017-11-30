@@ -14,8 +14,8 @@ public class UserRepositoryImpl implements UserDAO {
     private UserRepository repository;
 
     @Autowired
-    public UserRepositoryImpl(UserRepository userRepository) {
-        this.repository = userRepository;
+    public void setRepository(UserRepository repository) {
+        this.repository = repository;
     }
 
     @Override
