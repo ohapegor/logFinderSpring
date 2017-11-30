@@ -26,15 +26,6 @@ http://xmlns.oracle.com/weblogic/weblogic-web-app/1.4/weblogic-web-app.xsd">
         <jndi-name>jdbc/usersDS</jndi-name>
     </resource-description>
 
-<!--
-    <work-manager>
-        <name>myWorkManager</name>
-        <max-threads-constraint>
-            <name>MaxThreadsCount</name>
-            <count>32</count>
-        </max-threads-constraint>
-    </work-manager>
--->
 
 
 </weblogic-web-app>

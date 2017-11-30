@@ -21,8 +21,8 @@ public class ResultLogs {
 
     private String content;
 
-    @XmlElement
-    @JsonProperty
+    @XmlElement(required = true)
+    @JsonProperty(required = true)
     @XmlSchemaType(name = "dateTime")
     public Calendar getTimeMoment() {
         return timeMoment;
@@ -32,8 +32,8 @@ public class ResultLogs {
         this.timeMoment = timeMoment;
     }
 
-    @XmlElement
-    @JsonProperty
+    @XmlElement(required = true)
+    @JsonProperty(required = true)
     public String getFileName() {
         return fileName;
     }
@@ -42,8 +42,8 @@ public class ResultLogs {
         this.fileName = fileName;
     }
 
-    @XmlElement
-    @JsonProperty
+    @XmlElement(required = true)
+    @JsonProperty(required = true)
     public String getContent() {
         return content;
     }

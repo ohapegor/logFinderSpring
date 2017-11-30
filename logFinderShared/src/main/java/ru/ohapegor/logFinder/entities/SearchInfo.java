@@ -22,8 +22,8 @@ public class SearchInfo {
 
     private String fileExtension;
 
-    @XmlElement
-    @JsonProperty
+    @XmlElement(required = true)
+    @JsonProperty(required = true)
     public String getRegexp() {
         return regexp;
     }
@@ -32,8 +32,8 @@ public class SearchInfo {
         this.regexp = regexp;
     }
 
-    @XmlElement
-    @JsonProperty
+    @XmlElement(required = true)
+    @JsonProperty(required = true)
     public List<SignificantDateInterval> getDateIntervals() {
         return dateIntervals;
     }
@@ -52,8 +52,8 @@ public class SearchInfo {
         this.location = location;
     }
 
-    @XmlElement
-    @JsonProperty
+    @XmlElement(required = true)
+    @JsonProperty(required = true)
     public boolean getRealization() {
         return realization;
     }

@@ -3,6 +3,7 @@ package ru.ohapegor.logFinder.services.fileServices.remover;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import ru.ohapegor.logFinder.config.Config;
@@ -16,7 +17,11 @@ public class FileRemoverBean {
 
     private static final Logger logger = LogManager.getLogger();
 
-    @Scheduled(cron = "*/30 * * * * *")
+    //@Value("${FILE_LIFE_INTERVAL}")
+   // private long fileLife;
+
+
+  //  @Scheduled(cron = "*/30 * * * * *")
     public void removeOldFiles(){
         try {
             logger.info("Invoking FileRemoverBean.removeOldFiles()");

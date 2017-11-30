@@ -37,18 +37,15 @@ public class SearchLogBean implements SearchLogService {
     public SearchInfoResult logSearch(SearchInfo searchInfo) {
         logger.info("Entering SearchLogBean.logSearch()");
         ExecutorService executor = Executors.newSingleThreadExecutor();
-        Future<SearchInfoResult> future = executor.submit(() -> {
-            List<ResultLogs> logs = getResultLogs(searchInfo);
-            Objects.requireNonNull(logs, "SearchLogService.getResultLogs() should not return null!");
-            SearchInfoResult result = SearchInfoResult.of(searchInfo, logs);
-            result.setEmptyResultMessage(logs.isEmpty() ? "No logs Found" : null);
-            return result;
-        });
+        Future<List<ResultLogs>> future = executor.submit(() -> getResultLogs(searchInfo));
         SearchInfoResult result = null;
         try {
-            result = searchInfo.getRealization() ?
+            List<ResultLogs> logs = searchInfo.getRealization() ?
                     future.get(30, TimeUnit.SECONDS) :
                     future.get(10, TimeUnit.SECONDS);
+            Objects.requireNonNull(logs, "SearchLogService.getResultLogs() should not return null!");
+            result = SearchInfoResult.of(searchInfo, logs);
+            result.setEmptyResultMessage(logs.isEmpty() ? "No logs Found" : null);
         } catch (InterruptedException | ExecutionException e) {
             logger.error("Exception in SearchLogBean.logSearch() : " + getStackTrace(e));
             throw new RuntimeException(e);
@@ -223,7 +220,7 @@ public class SearchLogBean implements SearchLogService {
                 for (File file : logFiles) {
                     if (Thread.currentThread().isInterrupted()){
                         logger.info("Execution of SearchLogBean.getResultLogs() is interrupted");
-                        return null;
+                        throw new TooLongExecutionException();
                     }
                     logger.info("Searching logs in file : " + file.getName());
                     try (BufferedReader reader = new BufferedReader(new FileReader(file))) {

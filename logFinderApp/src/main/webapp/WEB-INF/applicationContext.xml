@@ -2,19 +2,32 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:task="http://www.springframework.org/schema/task"
+       xmlns:jee="http://www.springframework.org/schema/jee"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.springframework.org/schema/context
        http://www.springframework.org/schema/context/spring-context.xsd
        http://www.springframework.org/schema/task
-       http://www.springframework.org/schema/task/spring-task.xsd">
+       http://www.springframework.org/schema/task/spring-task.xsd
+       http://www.springframework.org/schema/jee
+       http://www.springframework.org/schema/jee/spring-jee.xsd">
 
-<!--
-    <context:property-placeholder location="classpath:location.properties" />
--->
+    <context:property-placeholder location="classpath:scheduler.properties"/>
 
     <context:component-scan base-package="ru.ohapegor.logFinder"/>
 
-    <task:annotation-driven/>
+    <task:scheduler id="myScheduler" pool-size="10"/>
+
+    <task:scheduled-tasks scheduler="myScheduler">
+        <task:scheduled ref="fileRemoverBean" method="removeOldFiles" cron="${DELETE_CRON}"/>
+        <!--<task:scheduled ref="fileRemoverBean" method="removeOldFiles" fixed-delay="${DELETE_INTERVAL}"/>-->
+    </task:scheduled-tasks>
+
+    <task:annotation-driven scheduler="myScheduler"/>
+
+    <jee:local-slsb id="myWorkManager"
+                    jndi-name="myWorkManager"
+                    business-interface="commonj.work.WorkManager"
+                    lazy-init="true"/>
 
 </beans>

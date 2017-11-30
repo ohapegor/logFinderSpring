@@ -79,7 +79,6 @@ public class FileReaderBean implements FileReaderService {
             }
         } catch (Exception e) {
             logger.error("Exception in  FileReaderBean.readInfoFromFile(File " + file.getName() + ") e = " + getStackTrace(e));
-            e.printStackTrace();
         }
         logger.info("Exiting FileReaderBean.readInfoFromFile(File file)");
         return searchInfoResult;

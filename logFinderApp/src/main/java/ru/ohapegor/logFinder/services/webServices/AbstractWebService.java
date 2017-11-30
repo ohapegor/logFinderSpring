@@ -10,30 +10,18 @@ import ru.ohapegor.logFinder.entities.SearchInfoResult;
 import ru.ohapegor.logFinder.services.fileServices.generator.FileGeneratorService;
 import ru.ohapegor.logFinder.services.logSearchService.SearchLogService;
 
+import javax.inject.Inject;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 import commonj.work.WorkManager;
 
+import java.lang.annotation.Inherited;
 import java.util.Date;
 
 import static org.apache.commons.lang.exception.ExceptionUtils.getStackTrace;
 
-public abstract class AbstractWebService /*implements ApplicationContextAware*/ {
-
- /*   @Override
-    public void setApplicationContext(ApplicationContext applicationContext) {
-        this.applicationContext = applicationContext;
-    }
-
-    @PostConstruct
-    private void initServices() {
-        searchLogService = applicationContext.getBean("searchLogService", SearchLogService.class);
-        fileGeneratorService = applicationContext.getBean(FileGeneratorService.class);
-    }
-
-    private ApplicationContext applicationContext;
-*/
+public abstract class AbstractWebService  {
 
     protected static final Logger logger = LogManager.getLogger();
 
@@ -53,14 +41,9 @@ public abstract class AbstractWebService /*implements ApplicationContextAware*/ 
 
     private WorkManager myWorkManager;
 
-    private void initWorkManager() {
-        try {
-            InitialContext initialContext = new InitialContext();
-            myWorkManager = (commonj.work.WorkManager) initialContext.lookup("java:comp/env/wm/myWorkManager");
-        } catch (NamingException e) {
-            logger.error("Exception in " + this.getClass().getSimpleName() + ".initWorkManager() : " + e);
-            e.printStackTrace();
-        }
+    @Autowired
+    public void setMyWorkManager(WorkManager myWorkManager) {
+        this.myWorkManager = myWorkManager;
     }
 
     private boolean fileSearch(SearchInfo searchInfo) {
@@ -96,7 +79,6 @@ public abstract class AbstractWebService /*implements ApplicationContextAware*/ 
                 //if file not found
                 fileGeneratorService.generateUniqueFilePath(searchInfo);
                 //run asynchronous file generation
-                initWorkManager();
                 try {
                     myWorkManager.schedule(new Work() {
                         @Override
