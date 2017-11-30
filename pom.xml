@@ -29,7 +29,6 @@
       <!--  <spring.ws.ver>3.0.0.RELEASE</spring.ws.ver>-->
 
         <spring-data-jpa.version>1.11.9.RELEASE</spring-data-jpa.version>
-        <!--test-->
     </properties>
 
 
