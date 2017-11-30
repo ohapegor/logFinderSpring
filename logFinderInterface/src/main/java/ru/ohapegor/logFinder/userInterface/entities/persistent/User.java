@@ -97,4 +97,11 @@ public class User implements Serializable {
         this.email = email;
         this.groups = groups;
     }
+
+    public User(String userName, String password, String email, String description) {
+        this.userName = userName;
+        this.password = password;
+        this.description = description;
+        this.email = email;
+    }
 }

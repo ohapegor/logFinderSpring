@@ -7,6 +7,8 @@ import java.util.List;
 
 public interface UserService {
 
+    void registerNewUser(User user);
+
     User getUserByName(String userName);
 
     void saveUser(User user);
@@ -16,4 +18,8 @@ public interface UserService {
     void deleteUser(User user);
 
     void updateUser(User user);
+
+    void ban(User user);
+
+    void unBan(User user);
 }

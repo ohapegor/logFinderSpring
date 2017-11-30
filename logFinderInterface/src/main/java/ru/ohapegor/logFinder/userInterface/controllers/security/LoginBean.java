@@ -29,16 +29,9 @@ public class LoginBean {
 
     private UserService userService;
 
-    private GroupDAO groupDAO;
-
     @Autowired
     public void setUserService(UserService userService) {
         this.userService = userService;
-    }
-
-    @Autowired
-    public void setGroupDAO(GroupDAO groupDAO){
-        this.groupDAO = groupDAO;
     }
 
     private String userName;
@@ -175,8 +168,7 @@ public class LoginBean {
                 context.addMessage(null, new FacesMessage(">>User already exists!<<"));
             } else {
                 String description = "Registration time: " + new Date().toString();
-                user = new User(userName, password, userEmail, description, Collections.singleton(groupDAO.getGroupByName("NewUsers")));
-                userService.saveUser(user);
+                userService.registerNewUser(new User(userName, password, userEmail, description));
                 context.addMessage(null, new FacesMessage("User : " + userName + " successfully registered!"));
                 //fatal level to store log in database
                 logger.fatal("Developer's log: New user registered, userName : " + userName);

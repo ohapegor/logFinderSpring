@@ -25,8 +25,6 @@ public class UserController {
 
     private UserService userService;
 
-    private GroupDAO groupDAO;
-
     private JmsMessageSender messageSender;
 
     @Autowired
@@ -37,11 +35,6 @@ public class UserController {
     @Autowired
     public void setUserService(UserService userService) {
         this.userService = userService;
-    }
-
-    @Autowired
-    public void setGroupDAO(GroupDAO groupDAO){
-        this.groupDAO = groupDAO;
     }
 
     public void setUserList(List<User> userList) {
@@ -68,23 +61,16 @@ public class UserController {
 
     public void ban(User user) {
         logger.info("Entering UserController.ban()");
-        user.getGroups().add(groupDAO.getGroupByName("BannedUsers"));
-        userService.updateUser(user);
+        userService.ban(user);
         userList = userService.getAllUsers();
         logger.info("Exiting UserController.ban()");
     }
 
     public void unBan(User user) {
-        logger.info("Entering UserController.ban()");
-        user.getGroups().remove(groupDAO.getGroupByName("BannedUsers"));
-        user.getGroups().forEach(group -> {
-            if (group.getGroupName().equalsIgnoreCase("BannedUsers")) {
-                user.getGroups().remove(group);
-            }
-        });
-        userService.updateUser(user);
+        logger.info("Entering UserController.unBan()");
+        userService.unBan(user);
         userList = userService.getAllUsers();
-        logger.info("Exiting UserController.ban()");
+        logger.info("Exiting UserController.unBan()");
     }
 
     public void refresh() {
@@ -96,6 +82,7 @@ public class UserController {
     public void sendMessageTo(User user)  {
         logger.info("Entering UserController.sendMessageTo(); message = " + user.getMessageToSend()+"; address = "+user.getEmail());
         messageSender.sendJmsMessage(new JmsMessage(user.getMessageToSend(),user.getEmail()));
+        //clean message field
         user.setMessageToSend(null);
         logger.info("Exiting UserController.sendMessageTo()");
     }

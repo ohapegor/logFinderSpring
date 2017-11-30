@@ -203,8 +203,9 @@ public class FileGeneratorBean implements FileGeneratorService {
                 //writeLogsToPdfFile(searchInfoResult);
                 ExecutorService executor = Executors.newSingleThreadExecutor();
                 executor.submit(() -> writeLogsToPdfFileWithFO(searchInfoResult, xslt));
-                if (!executor.awaitTermination(3, TimeUnit.SECONDS)) {
-                   logger.info("Writing logs to pdf exceeded timeout, shutdown =" + executor.shutdownNow());
+                if (!executor.awaitTermination(30, TimeUnit.SECONDS)) {
+                    executor.shutdownNow();
+                   logger.info("Writing logs to pdf exceeded timeout, shutdown =" + executor.isShutdown());
                 }
                 return;
             }

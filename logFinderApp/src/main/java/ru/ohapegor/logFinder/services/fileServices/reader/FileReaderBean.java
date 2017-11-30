@@ -35,7 +35,6 @@ import static org.apache.commons.lang.exception.ExceptionUtils.getStackTrace;
 import static ru.ohapegor.logFinder.entities.FileExtension.*;
 
 @Service("fileReaderService")
-@Scope("prototype")
 public class FileReaderBean implements FileReaderService {
 
     private static final Logger logger = LogManager.getLogger();

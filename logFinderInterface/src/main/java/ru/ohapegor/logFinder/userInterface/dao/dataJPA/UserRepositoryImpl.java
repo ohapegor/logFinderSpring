@@ -10,8 +10,13 @@ import java.util.List;
 @Repository("userDaoDataJPA")
 public class UserRepositoryImpl implements UserDAO {
 
-    @Autowired
+
     private UserRepository repository;
+
+    @Autowired
+    public UserRepositoryImpl(UserRepository userRepository) {
+        this.repository = userRepository;
+    }
 
     @Override
     public void updateUser(User user) {

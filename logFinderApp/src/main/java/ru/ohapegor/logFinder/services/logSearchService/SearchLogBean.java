@@ -28,7 +28,6 @@ import static org.apache.commons.lang.exception.ExceptionUtils.getStackTrace;
 
 
 @Service("searchLogService")
-@Scope("prototype")
 public class SearchLogBean implements SearchLogService {
 
     private static final Logger logger = LogManager.getLogger();
